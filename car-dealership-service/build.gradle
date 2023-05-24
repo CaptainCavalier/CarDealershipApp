@@ -13,10 +13,23 @@ repositories {
 }
 
 dependencies {
+	implementation("org.springframework.boot:spring-boot-starter")
+	implementation("org.springframework.boot:spring-boot-test:3.0.2")
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'io.cucumber:cucumber-java:7.11.1'
+	implementation 'io.cucumber:cucumber-java:7.11.1'
+	implementation 'io.cucumber:cucumber-java:7.11.1'
+	implementation 'io.cucumber:cucumber-java:7.11.1'
+	implementation 'io.cucumber:cucumber-java:7.11.1'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.h2database:h2'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation(platform("io.cucumber:cucumber-bom:7.11.1"))
+	testImplementation("io.cucumber:cucumber-java")
+	testImplementation("io.cucumber:cucumber-junit-platform-engine")
+	testImplementation("org.junit.platform:junit-platform-suite")
+	testImplementation("org.junit.jupiter:junit-jupiter")
+	testImplementation("junit:junit:4.13.1")
 }
 
 tasks.named('test') {
