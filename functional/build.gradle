@@ -1,0 +1,59 @@
+plugins {
+    id("java")
+    id 'org.springframework.boot' version '3.1.0'
+    id 'io.spring.dependency-management' version '1.1.0'
+}
+
+group = "com.sky.nebula"
+version = "0.0.1-SNAPSHOT"
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
+
+configurations {
+    cucumberRuntime {
+        extendsFrom testImplementation
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'io.cucumber:cucumber-java:7.11.1'
+    implementation 'io.cucumber:cucumber-java:7.11.1'
+    implementation 'io.cucumber:cucumber-java:7.11.1'
+    implementation 'io.cucumber:cucumber-java:7.11.1'
+    implementation 'io.cucumber:cucumber-java:7.11.1'
+    testImplementation(platform("org.junit:junit-bom:5.9.1"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation 'junit:junit:4.13.1'
+    testImplementation project(path: ':car-dealership-service')
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.rest-assured:rest-assured:5.2.0'
+    testImplementation 'io.rest-assured:xml-path:5.2.0'
+    testImplementation 'io.rest-assured:json-path:5.2.0'
+    testImplementation 'io.rest-assured:rest-assured-common:5.2.0'
+    testImplementation 'io.cucumber:cucumber-junit:7.10.1'
+    testImplementation 'io.cucumber:cucumber-spring:7.11.1'
+}
+
+task cucumber() {
+    dependsOn assemble, testClasses
+    doLast {
+        javaexec {
+            systemProperties = ['spring.profiles.active': profile]
+            main = "io.cucumber.core.cli.Main"
+            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+            environment("env", findProperty("env")?:"local")
+            args = [
+                    '--plugin', 'pretty',
+                    '--plugin', 'html:target/cucumber-report.html',
+                    '--glue', 'com.sky.nebula.carDealership.functional',
+                    'src/test/resources']
+            jvmArgs = ['-Dspring.devtools.restart.enabled=false']
+        }
+    }
+}
