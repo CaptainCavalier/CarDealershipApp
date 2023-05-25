@@ -1,28 +1,32 @@
 package com.sky.nebula.carDealership.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name="cars")
 public class Car {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    @Column
     private String brand;
 
+    @Column
     private String model;
 
+    @Column
     private Integer year;
 
+    @Column
     private Integer price;
 
+    @Column
     private Integer mileage;
 
+    @Column
     private String colour;
-
-
-    public Car(String brand, String model, Integer year, Integer price, Integer mileage, String colour) {
-        this.brand = brand;
-        this.model = model;
-        this.year = year;
-        this.price = price;
-        this.mileage = mileage;
-        this.colour = colour;
-    }
 
     public String getBrand() {
         return brand;
