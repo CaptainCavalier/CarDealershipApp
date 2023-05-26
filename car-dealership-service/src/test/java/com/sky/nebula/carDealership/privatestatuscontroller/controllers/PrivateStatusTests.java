@@ -1,4 +1,4 @@
-package com.sky.nebula.carDealership.privatestatuscontroller;
+package com.sky.nebula.carDealership.privatestatuscontroller.controllers;
 
 import com.sky.nebula.carDealership.controllers.PrivateStatusController;
 import org.junit.jupiter.api.Assertions;
@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-public class PrivateEndpointTests {
+public class PrivateStatusTests {
     PrivateStatusController privateStatusController = new PrivateStatusController();
     @Test
     void privateStatusEndpointReturnsOkAnd200() {
