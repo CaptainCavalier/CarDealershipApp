@@ -28,6 +28,15 @@ public class Car {
     @Column
     private String colour;
 
+    public Car(String brand, String model, Integer year, Integer price, Integer mileage, String colour) {
+        this.brand = brand;
+        this.model = model;
+        this.year = year;
+        this.price = price;
+        this.mileage = mileage;
+        this.colour = colour;
+    }
+
     public String getBrand() {
         return brand;
     }
