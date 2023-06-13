@@ -42,12 +42,10 @@ public class PrivateStepDefinitions {
 
     @When("client sends a {string} request to {string} endpoint")
     public void clientSendsARequestToEndpoint(String requestType, String endpoint) {
-        RequestSpecification request = given();
-        request.contentType(ContentType.JSON);
         switch (requestType) {
             case "GET": response = request.get(endpoint);
             break;
-            case "POST": response = request.body("").post(endpoint);
+            case "POST": response = request.post(endpoint);
             break;
             default:
                 throw new RuntimeException(requestType + " is not a valid request");
@@ -73,10 +71,14 @@ public class PrivateStepDefinitions {
     }
 
     @Given("the body of the car model is")
-    public RequestSpecification theBodyOfTheCarModelIs(List<Car> cars) throws JsonProcessingException {
+    public void theBodyOfTheCarModelIs(List<Car> cars) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(cars);
-        return given().contentType(ContentType.JSON).body(json);
+        request = given().contentType(ContentType.JSON).body(json);
     }
 
+    @Given("I want to post the following json: {string}")
+    public RequestSpecification iWantToPostTheFollowingJson(String jsonbody) {
+        return given().contentType(ContentType.JSON).body(jsonbody);
+    }
 }
