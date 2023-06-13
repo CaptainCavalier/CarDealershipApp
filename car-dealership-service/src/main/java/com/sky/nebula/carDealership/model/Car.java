@@ -35,6 +35,7 @@ public class Car {
         this.price = price;
         this.mileage = mileage;
         this.colour = colour;
+
     }
 
     public String getBrand() {
