@@ -63,13 +63,6 @@ public class PrivateStepDefinitions {
         Assertions.assertEquals(bodyMessage, json);
     }
 
-
-
-
-    @And("the response body should have the key {string} with the value of {string}")
-    public void theResponseBodyShouldHaveTheKeyDatabaseWithTheValueOfUpdated() {
-    }
-
     @Given("the body of the car model is")
     public void theBodyOfTheCarModelIs(List<Car> cars) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -80,5 +73,11 @@ public class PrivateStepDefinitions {
     @Given("I want to post the following json: {string}")
     public RequestSpecification iWantToPostTheFollowingJson(String jsonbody) {
         return given().contentType(ContentType.JSON).body(jsonbody);
+    }
+
+    @And("the response body should have the key {string}")
+    public void theResponseBodyShouldHaveTheKeyDatabaseUpdated(String bodyMessage) {
+            json = response.asString();
+            Assertions.assertEquals(bodyMessage, json);
     }
 }

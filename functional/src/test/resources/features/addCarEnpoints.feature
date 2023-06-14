@@ -6,5 +6,6 @@ Feature: testing add car endpoint
     | "BMW" | "X5" | 2022 | 80000 | 10000 | "space grey" |
     When client sends a "POST" request to "/cars/admin" endpoint
     Then the response should have a status code of 201
-#    And the response body should have the key 'Database' with the value of 'Updated'
+    And the response body should have the key '{"Description":"Database Updated"}'
+    #Need to get a second opinion on line 9, passing tests but unsure if it's the correct practice
 
