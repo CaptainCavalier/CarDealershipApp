@@ -1,12 +1,21 @@
 package com.sky.nebula.carDealership.functional.stepdefinitions;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sky.nebula.carDealership.functional.config.datatabletype.Car;
+import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.Assertions;
+
+import java.util.List;
+import java.util.Map;
+
 import static io.restassured.RestAssured.given;
 
 public class PrivateStepDefinitions {
@@ -17,14 +26,26 @@ public class PrivateStepDefinitions {
 
     String json;
 
+    private RequestSpecification request;
+
+    @DataTableType
+    public Car carEntry(Map<String, String> entry) {
+        return new Car(
+                entry.get("brand"),
+                entry.get("model"),
+                Integer.parseInt(entry.get("year")),
+                Integer.parseInt(entry.get("price")),
+                Integer.parseInt(entry.get("mileage")),
+                entry.get("colour")
+        );
+    }
+
     @When("client sends a {string} request to {string} endpoint")
     public void clientSendsARequestToEndpoint(String requestType, String endpoint) {
-        RequestSpecification request = given();
-        request.contentType(ContentType.JSON);
         switch (requestType) {
             case "GET": response = request.get(endpoint);
             break;
-            case "POST": response = request.body(requestData).post(endpoint);
+            case "POST": response = request.post(endpoint);
             break;
             default:
                 throw new RuntimeException(requestType + " is not a valid request");
@@ -42,4 +63,21 @@ public class PrivateStepDefinitions {
         Assertions.assertEquals(bodyMessage, json);
     }
 
+    @Given("the body of the car model is")
+    public void theBodyOfTheCarModelIs(List<Car> cars) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(cars);
+        request = given().contentType(ContentType.JSON).body(json);
+    }
+
+    @Given("I want to post the following json: {string}")
+    public RequestSpecification iWantToPostTheFollowingJson(String jsonbody) {
+        return given().contentType(ContentType.JSON).body(jsonbody);
+    }
+
+    @And("the response body should have the key {string}")
+    public void theResponseBodyShouldHaveTheKeyDatabaseUpdated(String bodyMessage) {
+            json = response.asString();
+            Assertions.assertEquals(bodyMessage, json);
+    }
 }
