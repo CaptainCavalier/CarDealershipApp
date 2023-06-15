@@ -12,9 +12,11 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class ControllerTests {
 
-    CarController carController = new CarController();
+    CarController carController;
 
     CarService carService;
 
@@ -37,7 +39,7 @@ public class ControllerTests {
 
         Assertions.assertTrue(response.getBody().containsKey(key));
         Assertions.assertTrue(response.getBody().containsValue(value));
-        Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
     //    Going to need create a GET cars method from CarController class.
@@ -47,13 +49,23 @@ public class ControllerTests {
 //    We will need to return a 200 Status code and the response body.
     @Test
     void getAllCarsEndpointReturns200AndResponse() {
-//      Arrange Step
+        // Arrange
         Car car1 = new Car("BMW", "X5", 2022, 80000, 10000, "space grey");
         Car car2 = new Car("BMW", "X6", 2023, 100000, 1000, "sky blue");
         List<Car> carList =  List.of(car1, car2);
 
+        // Mock the carService
+        CarService carService = Mockito.mock(CarService.class);
         Mockito.when(carService.getAllCars()).thenReturn(carList);
 
+        // Create the carController instance with the mocked carService
+        CarController carController = new CarController();
 
+        // Act
+        ResponseEntity<List<Car>> response = carController.getAllCars();
+
+        // Assert
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals(carList, response.getBody());
     }
 }

@@ -19,4 +19,9 @@ public class CarService {
 
         carRepository.saveAll(carList);
     }
+
+    public List<Car> getAllCars() {
+
+        return null;
+    }
 }
