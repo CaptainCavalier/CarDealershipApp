@@ -6,6 +6,10 @@ import jakarta.persistence.*;
 @Table(name="cars")
 public class Car {
 
+    public Car(){
+
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

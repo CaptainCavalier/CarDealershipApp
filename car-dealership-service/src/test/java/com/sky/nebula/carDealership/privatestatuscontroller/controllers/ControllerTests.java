@@ -5,19 +5,28 @@ import com.sky.nebula.carDealership.model.Car;
 import com.sky.nebula.carDealership.service.CarService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.Extension;
+import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
+@ExtendWith(MockitoExtension.class)
 public class ControllerTests {
 
+    @InjectMocks
     CarController carController;
 
+    @Mock
     CarService carService;
 
 
@@ -54,12 +63,7 @@ public class ControllerTests {
         Car car2 = new Car("BMW", "X6", 2023, 100000, 1000, "sky blue");
         List<Car> carList =  List.of(car1, car2);
 
-        // Mock the carService
-        CarService carService = Mockito.mock(CarService.class);
         Mockito.when(carService.getAllCars()).thenReturn(carList);
-
-        // Create the carController instance with the mocked carService
-        CarController carController = new CarController();
 
         // Act
         ResponseEntity<List<Car>> response = carController.getAllCars();

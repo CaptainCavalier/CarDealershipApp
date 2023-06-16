@@ -22,6 +22,6 @@ public class CarService {
 
     public List<Car> getAllCars() {
 
-        return null;
+        return carRepository.findAll();
     }
 }
