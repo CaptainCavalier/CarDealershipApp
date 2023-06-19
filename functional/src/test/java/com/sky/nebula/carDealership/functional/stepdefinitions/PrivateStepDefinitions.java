@@ -26,7 +26,7 @@ public class PrivateStepDefinitions {
 
     String json;
 
-    private RequestSpecification request;
+    private RequestSpecification request = given();
 
     @DataTableType
     public Car carEntry(Map<String, String> entry) {

@@ -71,5 +71,9 @@ public class ControllerTests {
         // Assert
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Assertions.assertEquals(carList, response.getBody());
+
+        System.out.println(response);
+
     }
+
 }
