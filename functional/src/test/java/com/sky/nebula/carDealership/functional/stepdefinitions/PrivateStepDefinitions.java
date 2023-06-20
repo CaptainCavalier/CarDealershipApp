@@ -3,6 +3,7 @@ package com.sky.nebula.carDealership.functional.stepdefinitions;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sky.nebula.carDealership.functional.config.datatabletype.Car;
+import io.cucumber.datatable.DataTable;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -79,5 +80,58 @@ public class PrivateStepDefinitions {
     public void theResponseBodyShouldHaveTheKeyDatabaseUpdated(String bodyMessage) {
             json = response.asString();
             Assertions.assertEquals(bodyMessage, json);
+    }
+
+    @And("the database has the following cars")
+    public void theDatabaseHasTheFollowingCars(List<Car> cars) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(cars);
+        request = given().contentType(ContentType.JSON).body(json);
+    }
+
+    @And("the response body should contain the list of cars in the database:")
+    public void theResponseBodyShouldContainTheListOfCarsInTheDatabase(List<Car> expectedCars) {
+        List<Car> actualCars = response.jsonPath().getList(".", Car.class);
+
+        Assertions.assertEquals(expectedCars.size(), actualCars.size());
+
+        for (int i = 0; i < expectedCars.size(); i++) {
+            Car expectedCar = expectedCars.get(i);
+            Car actualCar = actualCars.get(i);
+
+            Assertions.assertEquals(expectedCar.getBrand(), actualCar.getBrand());
+            Assertions.assertEquals(expectedCar.getModel(), actualCar.getModel());
+            Assertions.assertEquals(expectedCar.getYear(), actualCar.getYear());
+            Assertions.assertEquals(expectedCar.getPrice(), actualCar.getPrice());
+            Assertions.assertEquals(expectedCar.getMileage(), actualCar.getMileage());
+            Assertions.assertEquals(expectedCar.getColour(), actualCar.getColour());
+        }
+        System.out.println(expectedCars);
+    }
+
+//    @Given("the client sends a {string} request to {string} endpoint")
+//    public void theClientSendsARequestToEndpoint(String requestType, String endpoint, List<Car> carList) {
+//        switch (requestType) {
+//            case "GET": response = request.get(endpoint);
+//                break;
+//            case "POST": response = request.post(endpoint, carEntry
+//                break;
+//            default:
+//                throw new RuntimeException(requestType + " is not a valid request");
+//        }
+//    }
+
+    @Given("the client sends a {string} request to {string} endpoint with the following:")
+    public void theClientSendsARequestToEndpointWithTheFollowing(String requestType, String endpoint, DataTable dataTable) {
+        List<Map<String, String>> dataTableList = dataTable.asMaps(String.class, String.class); // will be a list of the 6 values of car model
+
+        switch (requestType) {
+            case "GET": response = request.get(endpoint, dataTableList);
+                break;
+            case "POST": response = request.post(endpoint, dataTableList);
+                break;
+            default:
+                throw new RuntimeException(requestType + " is not a valid request");
+        }
     }
 }
