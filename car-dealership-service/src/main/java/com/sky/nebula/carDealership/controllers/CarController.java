@@ -34,5 +34,11 @@ public class CarController {
         return new ResponseEntity<>(cars, HttpStatus.OK);
     }
 
+    @DeleteMapping("/admin/delete")
+    public ResponseEntity<String> deleteAllCars() {
+        carService.deleteAllCars();
+        return new ResponseEntity<String>("Database Cleared", HttpStatus.OK);
+    }
+
 
 }

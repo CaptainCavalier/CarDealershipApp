@@ -150,5 +150,10 @@ public class PrivateStepDefinitions {
                 throw new RuntimeException(requestType + " is not a valid request");
         }
     }
+
+    @Given("The database is empty")
+    public void deleteCars() {
+        request.delete("/cars/admin/delete");
+    }
 }
 

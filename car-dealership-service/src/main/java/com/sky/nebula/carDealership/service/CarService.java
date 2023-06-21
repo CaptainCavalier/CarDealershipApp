@@ -24,4 +24,8 @@ public class CarService {
 
         return carRepository.findAll();
     }
+
+    public void deleteAllCars() {
+        carRepository.deleteAll();
+    }
 }
