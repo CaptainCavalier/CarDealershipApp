@@ -9,11 +9,14 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.Assertions;
+import org.springframework.test.annotation.DirtiesContext;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -107,6 +110,7 @@ public class PrivateStepDefinitions {
             Assertions.assertEquals(expectedCar.getColour(), actualCar.getColour());
         }
         System.out.println(expectedCars);
+        System.out.println(actualCars);
     }
 
 //    @Given("the client sends a {string} request to {string} endpoint")
@@ -121,17 +125,30 @@ public class PrivateStepDefinitions {
 //        }
 //    }
 
+@DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD) //Until this line was added the test would fail because it wasn't clearing the database after each run. HOWEVER running the get request on postman is returning multiple values
     @Given("the client sends a {string} request to {string} endpoint with the following:")
     public void theClientSendsARequestToEndpointWithTheFollowing(String requestType, String endpoint, DataTable dataTable) {
         List<Map<String, String>> dataTableList = dataTable.asMaps(String.class, String.class); // will be a list of the 6 values of car model
 
+        // for (Map<String, String> tableMap : dataTableList) {
+//            Map<String, String> replacedMap = new HashMap<>();
+//            tableMap.forEach((key, value) -> {
+//                replacedMap.put(key, value.equals("") ? "" : value);
+//            });
+//
+//        }
+
         switch (requestType) {
-            case "GET": response = request.get(endpoint, dataTableList);
+            case "GET": response = request.get(endpoint);
                 break;
-            case "POST": response = request.post(endpoint, dataTableList);
+            case "POST":
+                RequestSpecification requestSpec = RestAssured.given().contentType(ContentType.JSON).body(dataTableList);
+                response = requestSpec.post(endpoint);
                 break;
+
             default:
                 throw new RuntimeException(requestType + " is not a valid request");
         }
     }
 }
+
