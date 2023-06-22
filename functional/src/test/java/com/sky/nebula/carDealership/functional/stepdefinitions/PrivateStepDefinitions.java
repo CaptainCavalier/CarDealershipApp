@@ -113,30 +113,11 @@ public class PrivateStepDefinitions {
         System.out.println(actualCars);
     }
 
-//    @Given("the client sends a {string} request to {string} endpoint")
-//    public void theClientSendsARequestToEndpoint(String requestType, String endpoint, List<Car> carList) {
-//        switch (requestType) {
-//            case "GET": response = request.get(endpoint);
-//                break;
-//            case "POST": response = request.post(endpoint, carEntry
-//                break;
-//            default:
-//                throw new RuntimeException(requestType + " is not a valid request");
-//        }
-//    }
-
 @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD) //Until this line was added the test would fail because it wasn't clearing the database after each run. HOWEVER running the get request on postman is returning multiple values
     @Given("the client sends a {string} request to {string} endpoint with the following:")
     public void theClientSendsARequestToEndpointWithTheFollowing(String requestType, String endpoint, DataTable dataTable) {
         List<Map<String, String>> dataTableList = dataTable.asMaps(String.class, String.class); // will be a list of the 6 values of car model
 
-        // for (Map<String, String> tableMap : dataTableList) {
-//            Map<String, String> replacedMap = new HashMap<>();
-//            tableMap.forEach((key, value) -> {
-//                replacedMap.put(key, value.equals("") ? "" : value);
-//            });
-//
-//        }
 
         switch (requestType) {
             case "GET": response = request.get(endpoint);
