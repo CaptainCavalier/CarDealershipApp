@@ -16,26 +16,40 @@ public class CarService {
         this.carRepository = carRepository;
     }
 
-    public void addCar(List<Car> carList) {
+    public List<Car> addCar(List<Car> carList) {
+
+        if (carList.size() == 0) {
+            throw new EmptyInputException("400", "Car list is empty");
+        }
 
         for (int i = 0; i < carList.size(); i++) {
-            Car carListEmptyValue = carList.get(i);
-            Car carListNotZero = carList.get(i);
+//            Car carListEmptyValue = carList.get(i);
+//            Car carListNotZero = carList.get(i);
 
-            if (carList.isEmpty() || carList.size() == 0) {
+            if (carList.get(i).getBrand().isEmpty()) {
                 throw new EmptyInputException("400", "Incorrect car data provided");
-            }
-        };
-
-        carRepository.saveAll(carList);
+            } else if (carList.get(i).getModel().isEmpty()) {
+                throw new EmptyInputException("400", "Incorrect car data provided");
+            } else if (carList.get(i).getYear().equals(0)) {
+                throw new EmptyInputException("400", "Incorrect car data provided");
+            } else if (carList.get(i).getPrice().equals(0)) {
+                throw new EmptyInputException("400", "Incorrect car data provided");
+            } else if (carList.get(i).getMileage().equals(0)) {
+                throw new EmptyInputException("400", "Incorrect car data provided");
+            } else if (carList.get(i).getColour().isEmpty()) {
+                throw new EmptyInputException("400", "Incorrect car data provided");
+            } else return carRepository.saveAll(carList);
+        }
+        return carRepository.saveAll(carList);
     }
 
-    public List<Car> getAllCars() {
+        public List<Car> getAllCars() {
 
-        return carRepository.findAll();
+            return carRepository.findAll();
+        }
+
+        public void deleteAllCars() {
+            carRepository.deleteAll();
+        }
     }
 
-    public void deleteAllCars() {
-        carRepository.deleteAll();
-    }
-}
