@@ -25,7 +25,6 @@ public class CarController {
     @PostMapping("/admin")
     public ResponseEntity<Map<String, String>> addCar(@RequestBody List<Car> carList) {
 
-//        implement try/catch blocks around this code
         carService.addCar(carList);
         return new ResponseEntity<>(Map.of("Description", "Database Updated"), HttpStatus.CREATED);
     }
