@@ -1,7 +1,8 @@
-package com.sky.nebula.carDealership.privatestatuscontroller.controllers;
+package com.sky.nebula.carDealership.exceptionHandlers;
 
 
 import com.sky.nebula.carDealership.controllers.CarController;
+import com.sky.nebula.carDealership.globalExceptionHandler.GlobalExceptionHandler;
 import com.sky.nebula.carDealership.model.Car;
 import com.sky.nebula.carDealership.service.CarService;
 import org.junit.jupiter.api.Assertions;
@@ -9,16 +10,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ExceptionHandlerTests {
-
     CarController carController;
 
     CarService carService;
+    GlobalExceptionHandler globalExceptionHandler = new GlobalExceptionHandler();
 
     @Test
     void addCarMissingDataReturns400AndResponse() {
