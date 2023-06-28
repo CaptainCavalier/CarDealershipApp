@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CarRepository extends JpaRepository<Car, Long> {
 
+    Car findByAll(String brand, String model, Integer year, Integer price, Integer mileage, String colour);
 }

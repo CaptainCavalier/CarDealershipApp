@@ -1,6 +1,11 @@
 package com.sky.nebula.carDealership.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import org.antlr.v4.runtime.misc.NotNull;
+import org.springframework.validation.annotation.Validated;
 
 @Entity
 @Table(name="cars")
@@ -11,25 +16,31 @@ public class Car {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String brand;
 
-    @Column
+    @Column(nullable = false, unique = true)
+    @NotBlank
     private String model;
 
-    @Column
+    @Column(name = "year_build")
+    @Min(1900)
+    @Digits(integer = 4, fraction = 0)
     private Integer year;
 
-    @Column
+    @Column(nullable = false)
+    @Min(0)
     private Integer price;
 
-    @Column
+    @Column(nullable = false)
+    @Min(0)
     private Integer mileage;
 
-    @Column
+    @Column(nullable = false)
+    @NotBlank
     private String colour;
 
     public Car(String brand, String model, Integer year, Integer price, Integer mileage, String colour) {

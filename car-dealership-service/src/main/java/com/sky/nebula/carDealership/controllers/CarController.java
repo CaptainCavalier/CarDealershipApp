@@ -2,6 +2,7 @@ package com.sky.nebula.carDealership.controllers;
 
 import com.sky.nebula.carDealership.model.Car;
 import com.sky.nebula.carDealership.service.CarService;
+import com.sky.nebula.carDealership.validators.CarValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class CarController {
     }
 
     @PostMapping("/admin")
-    public ResponseEntity<Map<String, String>> addCar(@RequestBody List<Car> carList) {
+    public ResponseEntity<Map<String, String>> addCar(@Validated @RequestBody List<Car> carList) {
 
         carService.addCar(carList);
         return new ResponseEntity<>(Map.of("Description", "Database Updated"), HttpStatus.CREATED);

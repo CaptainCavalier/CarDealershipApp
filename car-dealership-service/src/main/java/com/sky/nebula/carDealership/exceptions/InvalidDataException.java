@@ -1,6 +1,6 @@
 package com.sky.nebula.carDealership.exceptions;
 
-public class EmptyInputException extends RuntimeException {
+public class InvalidDataException extends RuntimeException {
 
     private String errorCode;
     private String errorMessage;
@@ -21,7 +21,7 @@ public class EmptyInputException extends RuntimeException {
         this.errorMessage = errorMessage;
     }
 
-    public EmptyInputException(String errorCode, String errorMessage) {
+    public InvalidDataException(String errorCode, String errorMessage) {
         super();
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
