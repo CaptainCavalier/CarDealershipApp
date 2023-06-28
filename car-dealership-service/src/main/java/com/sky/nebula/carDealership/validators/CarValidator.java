@@ -5,6 +5,7 @@ import com.sky.nebula.carDealership.model.Car;
 
 import static br.com.fluentvalidator.predicate.ComparablePredicate.greaterThanOrEqual;
 import static br.com.fluentvalidator.predicate.ObjectPredicate.nullValue;
+import static br.com.fluentvalidator.predicate.StringPredicate.stringEmptyOrNull;
 import static java.util.function.Predicate.not;
 
 public class CarValidator extends AbstractValidator<Car> {
@@ -15,12 +16,12 @@ public class CarValidator extends AbstractValidator<Car> {
         setPropertyOnContext("car");
 
         ruleFor(Car::getBrand)
-                .must(not(nullValue()))
+                .must(not(stringEmptyOrNull()))
                     .withMessage("Car brand must not be null")
                     .withFieldName("brand");
 
         ruleFor(Car::getModel)
-                .must(not(nullValue()))
+                .must(not(stringEmptyOrNull()))
                     .withMessage("Car model must not be null")
                     .withFieldName("model");
 
@@ -46,7 +47,7 @@ public class CarValidator extends AbstractValidator<Car> {
                     .withFieldName("mileage");
 
         ruleFor(Car::getColour)
-                .must(not(nullValue()))
+                .must(not(stringEmptyOrNull()))
                     .withMessage("Car colour must not be null")
                     .withFieldName("colour");
 

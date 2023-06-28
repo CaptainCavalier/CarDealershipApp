@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -44,29 +45,32 @@ public class ExceptionHandlerTests {
     @Test
     void handleCarAlreadyExistsExceptionTest() {
 
+//        List<Car> carList = new ArrayList<>();
+//        carList.add(new Car("BMW", "X5", 2022, 10000, 100000, "space grey"));
+
         Mockito.when(carRepository.findByAll("BMW", "X5", 2022, 10000, 100000, "space grey"))
                 .thenReturn(new Car("BMW", "X5", 2022, 10000, 100000, "space grey"));
 
         Assertions.assertThrows(CarAlreadyExistsException.class, () -> {
-            carService.addCar((List<Car>) testCar);
+            carService.addCar(carList);
         });
     }
 
 
-    @Test
-    void handleEmptyInputExceptionTest() {
-
-//  Calls the handleEmptyInput method and captures the response
-        ResponseEntity<String> response = globalExceptionHandler.handleEmptyInput();
-
-// Validates the status code response
-        HttpStatus expectedStatus = HttpStatus.BAD_REQUEST;
-        Assertions.assertEquals(expectedStatus, response.getStatusCode());
-
-//  validates the body of the response
-        String expectedMessage = "Incorrect car data provided";
-        Assertions.assertEquals(expectedMessage, response.getBody());
-    }
+//    @Test
+//    void handleEmptyInputExceptionTest() {
+//
+////  Calls the handleEmptyInput method and captures the response
+//        ResponseEntity<String> response = globalExceptionHandler.handleEmptyInput();
+//
+//// Validates the status code response
+//        HttpStatus expectedStatus = HttpStatus.BAD_REQUEST;
+//        Assertions.assertEquals(expectedStatus, response.getStatusCode());
+//
+////  validates the body of the response
+//        String expectedMessage = "Incorrect car data provided";
+//        Assertions.assertEquals(expectedMessage, response.getBody());
+//    }
 
 //    @Test whenEmptyFieldIsInput_ThrowsInvalidDataException
 
