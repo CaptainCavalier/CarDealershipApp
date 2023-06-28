@@ -19,4 +19,13 @@ public class CarService {
 
         carRepository.saveAll(carList);
     }
+
+    public List<Car> getAllCars() {
+
+        return carRepository.findAll();
+    }
+
+    public void deleteAllCars() {
+        carRepository.deleteAll();
+    }
 }
