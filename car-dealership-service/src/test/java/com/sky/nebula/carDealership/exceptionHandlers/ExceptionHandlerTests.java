@@ -19,7 +19,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class ExceptionHandlerTests {
 
@@ -40,19 +42,39 @@ public class ExceptionHandlerTests {
         carController = new CarController(carService);
     }
 
+//    @Test
+//    void handleCarAlreadyExistsExceptionTest() {
+//
+//        List<Car> carList = new ArrayList<>();
+//        carList.add(new Car("BMW", "X5", 2022, 10000, 100000, "space grey"));
+//
+//        Mockito.when(carRepository.findAll()).thenReturn(carList);
+//        Assertions.assertThrows(CarAlreadyExistsException.class, () -> {
+//            carService.addCar(carList);
+//        });
+//    }
+
     @Test
     void handleCarAlreadyExistsExceptionTest() {
+        // Prepare data
+        Car car = new Car("BMW", "X5", 2022, 10000, 100000, "space grey");
 
-        List<Car> carList = new ArrayList<>();
-        carList.add(new Car("BMW", "X5", 2022, 10000, 100000, "space grey"));
+        // Mock the behavior of the car repository
+        Mockito.when(carRepository.existsByBrandAndModelAndYearAndPriceAndMileageAndColour(
+                car.getBrand(),
+                car.getModel(),
+                car.getYear(),
+                car.getPrice(),
+                car.getMileage(),
+                car.getColour()
+        )).thenReturn(true);
 
-        Mockito.when(carRepository.findByAll("BMW", "X5", 2022, 10000, 100000, "space grey"))
-                .thenReturn(new Car("BMW", "X5", 2022, 10000, 100000, "space grey"));
-
+        // Assert that the exception is thrown
         Assertions.assertThrows(CarAlreadyExistsException.class, () -> {
-            carService.addCar(carList);
+            carService.addCar(Collections.singletonList(car));
         });
     }
+
 
     @Test
     void handleValidInputExceptionTest(){

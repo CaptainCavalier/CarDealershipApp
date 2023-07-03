@@ -21,5 +21,4 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleValidInput() {
         return new ResponseEntity<String> ("Incorrect car data provided", HttpStatus.BAD_REQUEST);
     }
-
 }
