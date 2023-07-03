@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CarAlreadyExistsException.class)
     public ResponseEntity<String> handleCarAlreadyExists() {
-        return new ResponseEntity<String> (HttpStatusCode.valueOf(409)) ;
+        return new ResponseEntity<String> ("Car already exists", HttpStatus.valueOf(409));
     }
 
 
@@ -21,4 +21,5 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleValidInput() {
         return new ResponseEntity<String> ("Incorrect car data provided", HttpStatus.BAD_REQUEST);
     }
+
 }

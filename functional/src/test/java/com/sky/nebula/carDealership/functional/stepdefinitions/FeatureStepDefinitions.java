@@ -16,13 +16,12 @@ import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
-public class PrivateStepDefinitions {
+public class FeatureStepDefinitions {
 
     Response response;
 

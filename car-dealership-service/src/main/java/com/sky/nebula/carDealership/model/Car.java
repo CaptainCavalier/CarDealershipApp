@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.http.HttpStatus;
 
 @Entity
 @Table(name="cars")
@@ -110,4 +111,5 @@ public class Car {
                 ", colour='" + colour + '\'' +
                 '}';
     }
+
 }
