@@ -50,11 +50,6 @@ public class ControllerTests {
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
-    //    Going to need create a GET cars method from CarController class.
-//    Never want to mock the thing we are actually testing. Do mock the things our CarController depends on such as the CarService.
-//    Will have to mock the response from the CarService.
-//    We are expecting back a list of cars so we will need to create a list of cars at some point.
-//    We will need to return a 200 Status code and the response body.
     @Test
     void getAllCarsEndpointReturns200AndResponse() {
         // Arrange

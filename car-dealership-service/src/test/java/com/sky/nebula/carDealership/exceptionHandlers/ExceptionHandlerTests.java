@@ -18,10 +18,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class ExceptionHandlerTests {
 
@@ -42,24 +39,11 @@ public class ExceptionHandlerTests {
         carController = new CarController(carService);
     }
 
-//    @Test
-//    void handleCarAlreadyExistsExceptionTest() {
-//
-//        List<Car> carList = new ArrayList<>();
-//        carList.add(new Car("BMW", "X5", 2022, 10000, 100000, "space grey"));
-//
-//        Mockito.when(carRepository.findAll()).thenReturn(carList);
-//        Assertions.assertThrows(CarAlreadyExistsException.class, () -> {
-//            carService.addCar(carList);
-//        });
-//    }
-
     @Test
     void handleCarAlreadyExistsExceptionTest() {
-        // Prepare data
-        Car car = new Car("BMW", "X5", 2022, 10000, 100000, "space grey");
 
-        // Mock the behavior of the car repository
+        Car car = new Car("BMW", "X5", 2022, 10000, 100000, "space grey");
+        ResponseEntity<Map<String, String>> response = carController.addCar(Collections.singletonList(car));
         Mockito.when(carRepository.existsByBrandAndModelAndYearAndPriceAndMileageAndColour(
                 car.getBrand(),
                 car.getModel(),
@@ -69,10 +53,14 @@ public class ExceptionHandlerTests {
                 car.getColour()
         )).thenReturn(true);
 
-        // Assert that the exception is thrown
-        Assertions.assertThrows(CarAlreadyExistsException.class, () -> {
-            carService.addCar(Collections.singletonList(car));
-        });
+        String key = "Description";
+        String value = "Car already exists in database";
+
+        Assertions.assertTrue(response.getBody().containsKey(key));
+        Assertions.assertTrue(response.getBody().containsValue(value));
+
+        Assertions.assertThrows(CarAlreadyExistsException.class, () ->
+                carController.addCar(Collections.singletonList(car)));
     }
 
 

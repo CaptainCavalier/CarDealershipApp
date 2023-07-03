@@ -23,10 +23,6 @@ public class CarService {
 
     public List<Car> addCar(List<Car> carList) {
 
-        if (carList.size() == 0) {
-            throw new InvalidDataException("400", "Car list is empty");
-        }
-
         List<Car> newCars = new ArrayList<>();
 
         for (Car car : carList) {
