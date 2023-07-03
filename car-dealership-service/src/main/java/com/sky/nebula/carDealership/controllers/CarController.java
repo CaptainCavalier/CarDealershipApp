@@ -16,8 +16,7 @@ import java.util.Map;
 @RequestMapping("/cars")
 public class CarController {
 
-    @Autowired
-    private CarService carService;
+    private final CarService carService;
 
     public CarController(CarService carService) {
         this.carService = carService;

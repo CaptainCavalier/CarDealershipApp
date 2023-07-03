@@ -27,10 +27,10 @@ public class CarService {
             throw new InvalidDataException("400", "Car list is empty");
         }
 
-        Car existingCar = carRepository.findByAll(car.getBrand(), car.getModel(), car.getYear(), car.getPrice(), car.getMileage(), car.getColour());
-        if (existingCar != null) {
-            throw new CarAlreadyExistsException("409", "Car already exists in the database");
-        }
+//        Car existingCar = carRepository.findByAll(car.getBrand(), car.getModel(), car.getYear(), car.getPrice(), car.getMileage(), car.getColour());
+//        if (existingCar != null) {
+//            throw new CarAlreadyExistsException("409", "Car already exists in the database");
+//        }
 
         for (int i = 0; i < carList.size(); i++) {
             if (carList.get(i).getBrand().isEmpty()) {

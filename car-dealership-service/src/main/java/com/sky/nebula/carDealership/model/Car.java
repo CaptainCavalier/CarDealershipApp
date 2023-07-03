@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import org.antlr.v4.runtime.misc.NotNull;
-import org.springframework.validation.annotation.Validated;
 
 @Entity
 @Table(name="cars")

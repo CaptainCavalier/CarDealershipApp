@@ -2,7 +2,6 @@ package com.sky.nebula.carDealership.globalExceptionHandler;
 
 import com.sky.nebula.carDealership.exceptions.CarAlreadyExistsException;
 import com.sky.nebula.carDealership.exceptions.InvalidDataException;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +16,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<String> (HttpStatusCode.valueOf(409)) ;
     }
 
+
     @ExceptionHandler(InvalidDataException.class)
     public ResponseEntity<String> handleValidInput() {
-
         return new ResponseEntity<String> ("Incorrect car data provided", HttpStatus.BAD_REQUEST);
     }
-
 }

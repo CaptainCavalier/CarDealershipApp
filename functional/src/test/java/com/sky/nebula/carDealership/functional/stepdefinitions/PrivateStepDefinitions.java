@@ -26,8 +26,6 @@ public class PrivateStepDefinitions {
 
     Response response;
 
-    String requestData;
-
     String json;
 
     private RequestSpecification request = given();
