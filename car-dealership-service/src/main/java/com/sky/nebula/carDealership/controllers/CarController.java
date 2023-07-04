@@ -1,16 +1,15 @@
 package com.sky.nebula.carDealership.controllers;
 
-import com.sky.nebula.carDealership.exceptions.CarAlreadyExistsException;
+
+import com.sky.nebula.carDealership.exceptions.InvalidDataException;
 import com.sky.nebula.carDealership.model.Car;
 import com.sky.nebula.carDealership.repository.CarRepository;
 import com.sky.nebula.carDealership.service.CarService;
-import com.sky.nebula.carDealership.validators.CarValidator;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+
 
 import java.util.List;
 import java.util.Map;
@@ -28,13 +27,14 @@ public class CarController {
     }
 
     @PostMapping("/admin")
-    public ResponseEntity<Map<String, String>> addCar(@Validated @RequestBody List<Car> carList) {
-        for (Car car : carList) {
-            if (car.getBrand() == null || car.getBrand().isEmpty())
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Brand cannot be empty");
-        } //The above loop is changing the status code to 400 when "brand" is empty. but doesn't return the description
-
-
+    public ResponseEntity<Map<String, String>> addCar(@Valid @RequestBody List<Car> carList) {
+//        for (Car car : carList) {
+//            if ((car.getBrand() == null) || car.getBrand().isEmpty()) ;
+//            throw new InvalidDataException(String.valueOf(Map.of("Description", "Incorrect car data provided")), HttpStatus.BAD_REQUEST);
+//
+//            //The above loop is changing the status code to 400 when "brand" is empty. but doesn't return the description
+//
+//        }
         carService.addCar(carList);
         return new ResponseEntity<>(Map.of("Description", "Database Updated"), HttpStatus.CREATED);
     }

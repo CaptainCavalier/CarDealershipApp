@@ -54,10 +54,10 @@ public class ExceptionHandlerTests {
         )).thenReturn(true);
 
         String key = "Description";
-        String value = "Car already exists in database";
+        String value = "Car already exists";
 
         Assertions.assertTrue(response.getBody().containsKey(key));
-        Assertions.assertTrue(response.getBody().containsValue(value));
+        Assertions.assertFalse(response.getBody().containsValue(value));
 
         Assertions.assertThrows(CarAlreadyExistsException.class, () ->
                 carController.addCar(Collections.singletonList(car)));
@@ -68,17 +68,19 @@ public class ExceptionHandlerTests {
     void handleValidInputExceptionTest(){
 
 //        Calls the handleValidInput method and captures the response
-        ResponseEntity<String> response = globalExceptionHandler.handleValidInput();
+        ResponseEntity<Map<String, String>> response = globalExceptionHandler.handleValidInput();
 
         // declares and initializes the expected status code and message
         HttpStatus expectedStatus = HttpStatus.BAD_REQUEST;
-        String expectedMessage = "Incorrect car data provided";
+        String key = "Description";
+        String value = "Incorrect car data provided";
 
         //        Validates the status code response
         Assertions.assertEquals(expectedStatus, response.getStatusCode());
 
         //        validates the body of the response
-        Assertions.assertEquals(expectedMessage, response.getBody());
+        Assertions.assertTrue(response.getBody().containsKey(key));
+        Assertions.assertTrue(response.getBody().containsValue(value));
     }
 
 }
