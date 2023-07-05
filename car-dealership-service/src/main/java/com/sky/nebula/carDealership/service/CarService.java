@@ -25,13 +25,6 @@ public class CarService {
     public List<Car> addCar(List<Car> carList) {
 
         List<Car> newCars = new ArrayList<>();
-//        for (Car car : carList) {
-//            if (car.getBrand() == null || car.getBrand().isEmpty()) {
-//                throw new InvalidDataException(Map.of("Description", "Incorrect car data provided"));
-//            }
-//
-//            //The above loop is changing the status code to 400 when "brand" is empty. but doesn't return the description
-//        }
 
         for (Car car : carList) {
             if (!(!car.getBrand().isEmpty() &&

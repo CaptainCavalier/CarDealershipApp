@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/cars")
@@ -28,13 +29,16 @@ public class CarController {
 
     @PostMapping("/admin")
     public ResponseEntity<Map<String, String>> addCar(@Valid @RequestBody List<Car> carList) {
-//        for (Car car : carList) {
-//            if ((car.getBrand() == null) || car.getBrand().isEmpty()) ;
-//            throw new InvalidDataException(String.valueOf(Map.of("Description", "Incorrect car data provided")), HttpStatus.BAD_REQUEST);
-//
-//            //The above loop is changing the status code to 400 when "brand" is empty. but doesn't return the description
-//
-//        }
+        for (Car car : carList) {
+            if ((car.getBrand() == null) || car.getBrand().isEmpty() ||
+                    (car.getModel() == null) || car.getModel().isEmpty() ||
+                    (car.getYear() == null) || (car.getYear().toString().length() != 4) ||
+                    (car.getPrice() == null) || car.getPrice().equals(0) ||
+                    (car.getMileage() == null) || (car.getMileage() == (0)) ||
+                    (car.getColour() == null) || car.getColour().isEmpty()) {
+                throw new InvalidDataException(String.valueOf(Map.of("Description", "Incorrect car data provided")), HttpStatus.BAD_REQUEST);
+            }
+        }
         carService.addCar(carList);
         return new ResponseEntity<>(Map.of("Description", "Database Updated"), HttpStatus.CREATED);
     }
