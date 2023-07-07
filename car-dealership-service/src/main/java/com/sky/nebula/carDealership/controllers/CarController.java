@@ -28,20 +28,10 @@ public class CarController {
     }
 
     @PostMapping("/admin")
-    public ResponseEntity<Map<String, String>> addCar(@Valid @RequestBody List<Car> carList) {
-        for (Car car : carList) {
-            if ((car.getBrand() == null) || car.getBrand().isEmpty() ||
-                    (car.getModel() == null) || car.getModel().isEmpty() ||
-                    (car.getYear() == null) || (car.getYear().toString().length() != 4) ||
-                    (car.getPrice() == null) || car.getPrice().equals(0) ||
-                    (car.getMileage() == null) || (car.getMileage() == (0)) ||
-                    (car.getColour() == null) || car.getColour().isEmpty()) {
-                throw new InvalidDataException(String.valueOf(Map.of("Description", "Incorrect car data provided")), HttpStatus.BAD_REQUEST);
-            }
-        }
-        carService.addCar(carList);
+    public ResponseEntity<Map<String, String>> addCar(@Valid @RequestBody List<Car> car) {
+        carService.addCar(car);
         return new ResponseEntity<>(Map.of("Description", "Database Updated"), HttpStatus.CREATED);
-    }
+        }
 
 
     @GetMapping("/admin")

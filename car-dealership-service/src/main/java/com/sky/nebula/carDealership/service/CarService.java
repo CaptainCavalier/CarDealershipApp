@@ -2,6 +2,7 @@ package com.sky.nebula.carDealership.service;
 
 import com.sky.nebula.carDealership.exceptions.CarAlreadyExistsException;
 import com.sky.nebula.carDealership.exceptions.InvalidDataException;
+import com.sky.nebula.carDealership.globalExceptionHandler.GlobalExceptionHandler;
 import com.sky.nebula.carDealership.model.Car;
 import com.sky.nebula.carDealership.repository.CarRepository;
 import org.springframework.http.HttpStatus;
@@ -23,30 +24,30 @@ public class CarService {
     }
 
     public List<Car> addCar(List<Car> carList) {
-
         List<Car> newCars = new ArrayList<>();
 
         for (Car car : carList) {
-            if (!(!car.getBrand().isEmpty() &&
-                    !car.getModel().isEmpty() &&
-                    car.getYear().toString().length() == 4 &&
-                    !car.getPrice().equals(0) &&
-                    !car.getMileage().equals(0) &&
-                    !car.getColour().isEmpty())) {
+            if ((car.getBrand() == null) || car.getBrand().isEmpty() ||
+                    (car.getModel() == null) || car.getModel().isEmpty() ||
+                    (car.getYear() == null) || (car.getYear().toString().length() != 4) ||
+                    (car.getPrice() == null) || car.getPrice().equals(0) ||
+                    (car.getMileage() == null) || car.getMileage().equals(0) ||
+                    (car.getColour() == null) || car.getColour().isEmpty()) {
 
                 throw new InvalidDataException(String.valueOf(Map.of("Description", "Incorrect car data provided")), HttpStatus.BAD_REQUEST);
-            } else if (carRepository.existsByBrandAndModelAndYearAndPriceAndMileageAndColour(
+            }
+
+            if (carRepository.existsByBrandAndModelAndYearAndPriceAndMileageAndColour(
                     car.getBrand(),
                     car.getModel(),
                     car.getYear(),
                     car.getPrice(),
                     car.getMileage(),
                     car.getColour())) {
-
                 throw new CarAlreadyExistsException("Description", "Car already exists");
-            } else {
-                newCars.add(car);
             }
+
+            newCars.add(car);
         }
 
         return carRepository.saveAll(newCars);

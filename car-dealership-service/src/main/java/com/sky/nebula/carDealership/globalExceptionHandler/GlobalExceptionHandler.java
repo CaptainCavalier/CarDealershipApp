@@ -19,7 +19,7 @@ public class GlobalExceptionHandler extends Throwable {
 
 
     @ExceptionHandler(InvalidDataException.class)
-    public ResponseEntity handleValidInput() {
+    public ResponseEntity handleInvalidInput() {
         return new ResponseEntity<>(Map.of("Description","Incorrect car data provided"), HttpStatus.BAD_REQUEST);
     }
 }

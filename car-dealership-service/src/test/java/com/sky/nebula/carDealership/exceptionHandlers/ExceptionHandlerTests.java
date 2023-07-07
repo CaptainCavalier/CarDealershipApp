@@ -67,18 +67,14 @@ public class ExceptionHandlerTests {
     @Test
     void handleValidInputExceptionTest(){
 
-//        Calls the handleValidInput method and captures the response
-        ResponseEntity<Map<String, String>> response = globalExceptionHandler.handleValidInput();
+        ResponseEntity<Map<String, String>> response = globalExceptionHandler.handleInvalidInput();
 
-        // declares and initializes the expected status code and message
         HttpStatus expectedStatus = HttpStatus.BAD_REQUEST;
         String key = "Description";
         String value = "Incorrect car data provided";
 
-        //        Validates the status code response
         Assertions.assertEquals(expectedStatus, response.getStatusCode());
 
-        //        validates the body of the response
         Assertions.assertTrue(response.getBody().containsKey(key));
         Assertions.assertTrue(response.getBody().containsValue(value));
     }
