@@ -1,6 +1,7 @@
 package com.sky.nebula.carDealership.controllers;
 
 
+import com.sky.nebula.carDealership.exceptions.InvalidAtributeException;
 import com.sky.nebula.carDealership.exceptions.InvalidDataException;
 import com.sky.nebula.carDealership.model.Car;
 import com.sky.nebula.carDealership.repository.CarRepository;
@@ -29,6 +30,7 @@ public class CarController {
 
     @PostMapping("/admin")
     public ResponseEntity<Map<String, String>> addCar(@Valid @RequestBody List<Car> car) {
+
         carService.addCar(car);
         return new ResponseEntity<>(Map.of("Description", "Database Updated"), HttpStatus.CREATED);
         }
@@ -45,6 +47,5 @@ public class CarController {
         carService.deleteAllCars();
         return new ResponseEntity<String>("Database Cleared", HttpStatus.OK);
     }
-
 
 }
