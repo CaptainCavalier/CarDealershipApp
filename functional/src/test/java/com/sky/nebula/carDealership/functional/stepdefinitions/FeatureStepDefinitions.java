@@ -16,6 +16,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.Assertions;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.Collections;
@@ -129,29 +130,9 @@ public class FeatureStepDefinitions {
                 break;
 
             default:
-                throw new RuntimeException(requestType + " is not a valid request");
+                throw new InvalidDataException(requestType + " is not a valid request");
         }
     }
 
-    @Given("The database is empty")
-    public void deleteCars() {
-        request.delete("/cars/admin/delete");
-    }
-
-    @Given("I have a car object with incorrect data")
-    public void iHaveACarObjectWithIncorrectData() {
-    }
-
-    @When("I make a post request to the add cars\\/admin endpoint")
-    public void iMakeAPostRequestToTheAddCarsAdminEndpoint() {
-    }
-
-    @Then("I receive a {int} status and a body of {string}")
-    public void iReceiveAStatusAndABodyOf(int arg0, String arg1) {
-    }
-
-    @When("the client sends a {string} request to {string} endpoint")
-    public void theClientSendsARequestToEndpoint(String arg0, String arg1) {
-    }
 }
 
