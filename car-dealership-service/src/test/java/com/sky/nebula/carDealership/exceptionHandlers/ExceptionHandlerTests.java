@@ -4,10 +4,12 @@ package com.sky.nebula.carDealership.exceptionHandlers;
 import com.sky.nebula.carDealership.controllers.CarController;
 
 import com.sky.nebula.carDealership.exceptions.CarAlreadyExistsException;
+import com.sky.nebula.carDealership.exceptions.InvalidDataException;
 import com.sky.nebula.carDealership.globalExceptionHandler.GlobalExceptionHandler;
 import com.sky.nebula.carDealership.model.Car;
 import com.sky.nebula.carDealership.repository.CarRepository;
 import com.sky.nebula.carDealership.service.CarService;
+import io.cucumber.java.it.Ma;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,6 +22,10 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
+
 public class ExceptionHandlerTests {
 
     @Mock
@@ -30,7 +36,6 @@ public class ExceptionHandlerTests {
     private CarService carService;
     GlobalExceptionHandler globalExceptionHandler = new GlobalExceptionHandler();
 
-    Car testCar = new Car("BMW", "X5", 2022, 10000, 100000, "space grey");
 
     @BeforeEach
     void setup() {
@@ -59,8 +64,9 @@ public class ExceptionHandlerTests {
         Assertions.assertTrue(response.getBody().containsKey(key));
         Assertions.assertFalse(response.getBody().containsValue(value));
 
-        Assertions.assertThrows(CarAlreadyExistsException.class, () ->
+        assertThrows(CarAlreadyExistsException.class, () ->
                 carController.addCar(Collections.singletonList(car)));
+//        need to add a test to actually test the method
     }
 
 
@@ -77,6 +83,13 @@ public class ExceptionHandlerTests {
 
         Assertions.assertTrue(response.getBody().containsKey(key));
         Assertions.assertTrue(response.getBody().containsValue(value));
+    }
+
+    @Test()
+    void addCarMissingFieldDataReturns400AndErrorMessage() throws InvalidDataException {
+        Car testCarMissingData = new Car("", "X5", null, 10000, 100000, "space grey");
+        Assertions.assertThrows(InvalidDataException.class, () ->
+                carController.addCar(Collections.singletonList(testCarMissingData)));
     }
 
 }

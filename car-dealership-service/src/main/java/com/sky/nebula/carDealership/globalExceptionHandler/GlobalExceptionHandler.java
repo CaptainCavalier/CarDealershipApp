@@ -24,8 +24,4 @@ public class GlobalExceptionHandler extends Throwable {
         return new ResponseEntity<>(Map.of("Description","Incorrect car data provided"), HttpStatus.BAD_REQUEST);
     }
 
-//    @ExceptionHandler({HttpMessageNotReadableException.class, RuntimeException.class})    // you can add multiple exceptions in the same handler
-//    public ResponseEntity InvalidAtributeException() {
-//        return new ResponseEntity<>(Map.of("Description","Incorrect car data provided"), HttpStatus.BAD_REQUEST);
-//    }
 }

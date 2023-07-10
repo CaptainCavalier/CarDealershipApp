@@ -27,7 +27,7 @@ public class InvalidDataException extends RuntimeException {
         this.errorMessage = errorMessage;
     }
 
-    public InvalidDataException(String errorCode, String errorMessage) {
+    public InvalidDataException(String errorCode) {
         super();
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
