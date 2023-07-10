@@ -2,6 +2,8 @@ package com.sky.nebula.carDealership.functional.stepdefinitions;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sky.nebula.carDealership.controllers.CarController;
+import com.sky.nebula.carDealership.exceptions.InvalidDataException;
 import com.sky.nebula.carDealership.functional.config.datatabletype.Car;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.DataTableType;
@@ -16,6 +18,7 @@ import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +26,7 @@ import static io.restassured.RestAssured.given;
 
 public class FeatureStepDefinitions {
 
+    CarController carController;
     Response response;
 
     String json;
@@ -112,7 +116,7 @@ public class FeatureStepDefinitions {
 
 @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD) //Until this line was added the test would fail because it wasn't clearing the database after each run. HOWEVER running the get request on postman is returning multiple values
     @Given("the client sends a {string} request to {string} endpoint with the following:")
-    public void theClientSendsARequestToEndpointWithTheFollowing(String requestType, String endpoint, DataTable dataTable) {
+    public void theClientSendsARequestToEndpointWithTheFollowing(String requestType, String endpoint, DataTable dataTable) throws InvalidDataException {
         List<Map<String, String>> dataTableList = dataTable.asMaps(String.class, String.class); // will be a list of the 6 values of car model
 
 
@@ -132,6 +136,22 @@ public class FeatureStepDefinitions {
     @Given("The database is empty")
     public void deleteCars() {
         request.delete("/cars/admin/delete");
+    }
+
+    @Given("I have a car object with incorrect data")
+    public void iHaveACarObjectWithIncorrectData() {
+    }
+
+    @When("I make a post request to the add cars\\/admin endpoint")
+    public void iMakeAPostRequestToTheAddCarsAdminEndpoint() {
+    }
+
+    @Then("I receive a {int} status and a body of {string}")
+    public void iReceiveAStatusAndABodyOf(int arg0, String arg1) {
+    }
+
+    @When("the client sends a {string} request to {string} endpoint")
+    public void theClientSendsARequestToEndpoint(String arg0, String arg1) {
     }
 }
 

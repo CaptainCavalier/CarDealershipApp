@@ -66,7 +66,6 @@ public class ExceptionHandlerTests {
 
         assertThrows(CarAlreadyExistsException.class, () ->
                 carController.addCar(Collections.singletonList(car)));
-//        need to add a test to actually test the method
     }
 
 
