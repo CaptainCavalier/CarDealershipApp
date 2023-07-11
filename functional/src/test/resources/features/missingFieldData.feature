@@ -4,7 +4,6 @@ Feature: To check exception handlers are thrown when missing/malformed field dat
         Given the client sends a "POST" request to "/cars/admin" endpoint with the following:
           | brand | model | year | price | mileage | colour   |
           |       | X5    | 2022 | 80000 | 10000   | sky blue |
-      When the client sends a "POST" request to "/cars/admin/" endpoint
         Then the response should have a status code of 400
         And the response body should have the key '{"Description":"Incorrect car data provided"}'
 
