@@ -1,7 +1,6 @@
 package com.sky.nebula.carDealership.exceptionHandlers;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sky.nebula.carDealership.controllers.CarController;
 import com.sky.nebula.carDealership.exceptions.CarAlreadyExistsException;
 import com.sky.nebula.carDealership.exceptions.InvalidDataException;
@@ -9,8 +8,6 @@ import com.sky.nebula.carDealership.globalExceptionHandler.GlobalExceptionHandle
 import com.sky.nebula.carDealership.model.Car;
 import com.sky.nebula.carDealership.repository.CarRepository;
 import com.sky.nebula.carDealership.service.CarService;
-import io.cucumber.core.internal.com.fasterxml.jackson.core.JsonProcessingException;
-import io.cucumber.core.internal.com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,9 +15,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
-import org.springframework.mock.web.reactive.function.server.MockServerRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.fail;
+
 
 import java.util.Collections;
 import java.util.Map;
@@ -70,7 +75,6 @@ public class ExceptionHandlerTests {
         Assertions.assertTrue(response.getBody().containsValue(value));
     }
 
-
     @Test
     void addCarInvalidFieldDataReturns400AndErrorMessage() throws InvalidDataException {
 
@@ -89,6 +93,53 @@ public class ExceptionHandlerTests {
         Assertions.assertTrue(response.getBody().containsKey(key));
         Assertions.assertTrue(response.getBody().containsValue(value));
     }
+
+    @Test
+    void testMissingAttributeExceptionHandling() {
+
+        String malformedCarJson = "{ \"model\": \"A5\", \"year\": 1900, \"price\": 10000, \"mileage\": 663000, \"colour\": \"sky blue\" }";
+
+
+        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(carController).setControllerAdvice(new GlobalExceptionHandler()).build();
+
+        try {
+            mockMvc.perform(post("/cars/admin")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(malformedCarJson))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.Description", is("Incorrect car data provided")));
+        } catch (Exception e) {
+            fail("Should not have thrown any exception");
+        }
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //    @Test
 //    void addCarInvalidAttributeDataReturns400AndErrorMessage() throws InvalidDataException {
@@ -112,25 +163,3 @@ public class ExceptionHandlerTests {
 //        Assertions.assertTrue(response.getBody().containsValue(value));
 //    }
 //
-//    @Test
-//    void testInvalidAttributeExceptionHandling() throws InvalidDataException {
-//        // Create a malformed car object
-//        String malformedCarJson = "{ \"bra\": \"BMW\", \"model\": \"A5\", \"year\": 1900, \"price\": 10000, \"mileage\": 663000, \"colour\": \"sky blue\" }";
-//        // Use the Jackson library to map the JSON to a Map object
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        Map<String, Object> malformedCarData;
-//
-//        // Mock the repository method call
-//        Mockito.when(carRepository.existsByBrandAndModelAndYearAndPriceAndMileageAndColour(
-//                (String) malformedCarData.get("bra"),
-//                (String) malformedCarData.get("model"),
-//                (Integer) malformedCarData.get("year"),
-//                (Integer) malformedCarData.get("price"),
-//                (Integer) malformedCarData.get("mileage"),
-//                (String) malformedCarData.get("colour")
-//        )).thenReturn(true);
-//        // We expect the method call to throw an InvalidAtributeException
-//        Assertions.assertThrows(InvalidDataException.class, () -> carController.addCar(Collections.singletonList(malformedCarData)));
-//    }
-
-}
