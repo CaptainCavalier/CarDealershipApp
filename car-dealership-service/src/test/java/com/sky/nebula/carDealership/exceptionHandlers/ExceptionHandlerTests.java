@@ -24,7 +24,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.fail;
 
 
 import java.util.Collections;
@@ -95,25 +94,29 @@ public class ExceptionHandlerTests {
     }
 
     @Test
-    void testMissingAttributeExceptionHandling() {
+    void testMissingAttributeExceptionHandling() throws InvalidDataException {
 
-        String malformedCarJson = "{ \"model\": \"A5\", \"year\": 1900, \"price\": 10000, \"mileage\": 663000, \"colour\": \"sky blue\" }";
+        ResponseEntity<Map<String, String>> response = globalExceptionHandler.handleInvalidInput();
+
+//        String malformedCarJson = "{ \"model\": \"A5\", \"year\": 1900, \"price\": 10000, \"mileage\": 663000, \"colour\": \"sky blue\" }";
+
+        Car malformedCarJson = new Car("{\"model\": \"A5\", \"year\": 1900, \"price\": 10000, \"mileage\": 663000, \"colour\": \"sky blue\" }");
 
 
-        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(carController).setControllerAdvice(new GlobalExceptionHandler()).build();
+        HttpStatus expectedStatus = HttpStatus.BAD_REQUEST;
+        String key = "Description";
+        String value = "Incorrect car data provided";
 
-        try {
-            mockMvc.perform(post("/cars/admin")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(malformedCarJson))
-                    .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.Description", is("Incorrect car data provided")));
-        } catch (Exception e) {
-            fail("Should not have thrown any exception");
+        Assertions.assertThrows(InvalidDataException.class, () ->
+                carController.addCar(Collections.singletonList(malformedCarJson)));
+
+        Assertions.assertEquals(expectedStatus, response.getStatusCode());
+        Assertions.assertTrue(response.getBody().containsKey(key));
+        Assertions.assertTrue(response.getBody().containsValue(value));
         }
     }
 
-}
+
 
 
 

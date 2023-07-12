@@ -16,10 +16,11 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.Assertions;
-import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -111,14 +112,12 @@ public class FeatureStepDefinitions {
             Assertions.assertEquals(expectedCar.getMileage(), actualCar.getMileage());
             Assertions.assertEquals(expectedCar.getColour(), actualCar.getColour());
         }
-        System.out.println(expectedCars);
-        System.out.println(actualCars);
     }
 
-@DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD) //Until this line was added the test would fail because it wasn't clearing the database after each run. HOWEVER running the get request on postman is returning multiple values
+@DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     @Given("the client sends a {string} request to {string} endpoint with the following:")
     public void theClientSendsARequestToEndpointWithTheFollowing(String requestType, String endpoint, DataTable dataTable) throws InvalidDataException {
-        List<Map<String, String>> dataTableList = dataTable.asMaps(String.class, String.class); // will be a list of the 6 values of car model
+        List<Map<String, String>> dataTableList = dataTable.asMaps(String.class, String.class);
 
 
         switch (requestType) {

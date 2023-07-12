@@ -10,13 +10,6 @@ import java.util.Optional;
 
 public interface CarRepository extends JpaRepository<Car, Long> {
 
-    Car findByBrand(String brand);
-    Car findByModel(String model);
-    Car findByYear(Integer year);
-    Car findByPrice(Integer price);
-    Car findByMileage(Integer mileage);
-    Car findByColour(String colour);
-
     boolean existsByBrandAndModelAndYearAndPriceAndMileageAndColour(
             String brand,
             String model,

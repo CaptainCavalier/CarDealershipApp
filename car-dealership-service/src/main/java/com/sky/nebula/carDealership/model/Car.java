@@ -4,13 +4,12 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name="cars")
 public class Car {
 
-    public Car(){
+    public Car(String s){
 
     }
 
