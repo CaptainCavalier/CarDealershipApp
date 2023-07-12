@@ -8,6 +8,8 @@ import com.sky.nebula.carDealership.globalExceptionHandler.GlobalExceptionHandle
 import com.sky.nebula.carDealership.model.Car;
 import com.sky.nebula.carDealership.repository.CarRepository;
 import com.sky.nebula.carDealership.service.CarService;
+import io.cucumber.core.internal.com.fasterxml.jackson.core.ObjectCodec;
+import io.cucumber.core.internal.com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,18 +17,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.json.JsonParser;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.hamcrest.Matchers.is;
-
+import org.springframework.http.converter.HttpMessageNotReadableException;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class ExceptionHandlerTests {
@@ -94,27 +91,26 @@ public class ExceptionHandlerTests {
     }
 
     @Test
-    void testMissingAttributeExceptionHandling() throws InvalidDataException {
+    void handleMalformedAttributeNameTest() throws HttpMessageNotReadableException {
+
+        String malformedJson = "{\"brand\": \"BMW\", \"model\": \"A5\", \"year\": 1900, \"price\": 10000, \"mileage\": 663000, \"colour\": \"sky blue\" }";
+
+        Assertions.assertThrows(InvalidDataException.class, () -> {
+            carController.addCar(List.of(new Car(malformedJson)));
+
+        });
 
         ResponseEntity<Map<String, String>> response = globalExceptionHandler.handleInvalidInput();
-
-//        String malformedCarJson = "{ \"model\": \"A5\", \"year\": 1900, \"price\": 10000, \"mileage\": 663000, \"colour\": \"sky blue\" }";
-
-        Car malformedCarJson = new Car("{\"model\": \"A5\", \"year\": 1900, \"price\": 10000, \"mileage\": 663000, \"colour\": \"sky blue\" }");
-
 
         HttpStatus expectedStatus = HttpStatus.BAD_REQUEST;
         String key = "Description";
         String value = "Incorrect car data provided";
 
-        Assertions.assertThrows(InvalidDataException.class, () ->
-                carController.addCar(Collections.singletonList(malformedCarJson)));
-
         Assertions.assertEquals(expectedStatus, response.getStatusCode());
         Assertions.assertTrue(response.getBody().containsKey(key));
         Assertions.assertTrue(response.getBody().containsValue(value));
-        }
     }
+}
 
 
 

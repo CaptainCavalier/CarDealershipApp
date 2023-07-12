@@ -1,8 +1,7 @@
 package com.sky.nebula.carDealership.controllers;
 
 
-import com.sky.nebula.carDealership.exceptions.InvalidAtributeException;
-import com.sky.nebula.carDealership.exceptions.InvalidDataException;
+
 import com.sky.nebula.carDealership.model.Car;
 import com.sky.nebula.carDealership.repository.CarRepository;
 import com.sky.nebula.carDealership.service.CarService;

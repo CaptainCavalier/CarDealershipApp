@@ -1,8 +1,10 @@
 package com.sky.nebula.carDealership.functional.stepdefinitions;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sky.nebula.carDealership.controllers.CarController;
+import com.sky.nebula.carDealership.dto.MyDtoNullKeySerializer;
 import com.sky.nebula.carDealership.exceptions.InvalidDataException;
 import com.sky.nebula.carDealership.functional.config.datatabletype.Car;
 import io.cucumber.datatable.DataTable;
@@ -32,6 +34,9 @@ public class FeatureStepDefinitions {
     Response response;
 
     String json;
+    ObjectMapper mapper = new ObjectMapper();
+
+
 
     private RequestSpecification request = given();
 
@@ -117,12 +122,16 @@ public class FeatureStepDefinitions {
 @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     @Given("the client sends a {string} request to {string} endpoint with the following:")
     public void theClientSendsARequestToEndpointWithTheFollowing(String requestType, String endpoint, DataTable dataTable) throws InvalidDataException {
+
+//    mapper.setSerializerProvider().setNullKeySerializer(new MyDtoNullKeySerializer());
+
         List<Map<String, String>> dataTableList = dataTable.asMaps(String.class, String.class);
 
         switch (requestType) {
             case "GET": response = request.get(endpoint);
                 break;
             case "POST":
+
                 RequestSpecification requestSpec = RestAssured.given().contentType(ContentType.JSON).body(dataTableList);
                 response = requestSpec.post(endpoint);
                 break;
