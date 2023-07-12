@@ -119,7 +119,6 @@ public class FeatureStepDefinitions {
     public void theClientSendsARequestToEndpointWithTheFollowing(String requestType, String endpoint, DataTable dataTable) throws InvalidDataException {
         List<Map<String, String>> dataTableList = dataTable.asMaps(String.class, String.class);
 
-
         switch (requestType) {
             case "GET": response = request.get(endpoint);
                 break;
