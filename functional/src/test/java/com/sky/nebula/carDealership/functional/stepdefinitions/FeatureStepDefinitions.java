@@ -18,6 +18,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.Assertions;
+import org.springframework.boot.json.JsonParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 
@@ -140,6 +141,23 @@ public class FeatureStepDefinitions {
                 throw new InvalidDataException(requestType + " is not a valid request");
         }
     }
+
+    @Given("the client sends a {string} request to {string} endpoint with a malformed json list")
+    public void theClientSendsARequestToEndpointWithAMalformedJsonList(String requestType, String endpoint) {
+//        String malformedJsonRequest = "This is not a JSON list of cars";
+
+        Car test = new Car("bmw", "z5", 2020, 1234567, 10000, "green");
+
+        if ("POST".equals(requestType)) {
+            RequestSpecification requestSpec = RestAssured.given().contentType(ContentType.JSON).body(test);
+            response = requestSpec.post(endpoint);
+        } else {
+            throw new InvalidDataException(requestType);
+        }
+    }
+
+
+
 
 }
 

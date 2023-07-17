@@ -93,7 +93,9 @@ public class ExceptionHandlerTests {
     @Test
     void handleMalformedAttributeNameTest() throws HttpMessageNotReadableException {
 
-        String malformedJson = "{\"brand\": \"BMW\", \"model\": \"A5\", \"year\": 1900, \"price\": 10000, \"mileage\": 663000, \"colour\": \"sky blue\" }";
+//        String malformedJson = "{\brand\: \"BMW\", \"model\": \"A5\", \"year\": 1900, \"price\": 10000, \"mileage\": 663000, \"colour\": \"sky blue\" }";
+
+        String malformedJson = "this is not a json list of cars";
 
         Assertions.assertThrows(InvalidDataException.class, () -> {
             carController.addCar(List.of(new Car(malformedJson)));
