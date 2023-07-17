@@ -1,10 +1,8 @@
 package com.sky.nebula.carDealership.functional.stepdefinitions;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sky.nebula.carDealership.controllers.CarController;
-import com.sky.nebula.carDealership.dto.MyDtoNullKeySerializer;
 import com.sky.nebula.carDealership.exceptions.InvalidDataException;
 import com.sky.nebula.carDealership.functional.config.datatabletype.Car;
 import io.cucumber.datatable.DataTable;
@@ -18,12 +16,8 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.Assertions;
-import org.springframework.boot.json.JsonParser;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,8 +30,6 @@ public class FeatureStepDefinitions {
 
     String json;
     ObjectMapper mapper = new ObjectMapper();
-
-
 
     private RequestSpecification request = given();
 
@@ -144,20 +136,19 @@ public class FeatureStepDefinitions {
 
     @Given("the client sends a {string} request to {string} endpoint with a malformed json list")
     public void theClientSendsARequestToEndpointWithAMalformedJsonList(String requestType, String endpoint) {
-//        String malformedJsonRequest = "This is not a JSON list of cars";
+        String malformedJsonRequest = "This is not a JSON List of a car";
 
-        Car test = new Car("bmw", "z5", 2020, 1234567, 10000, "green");
-
-        if ("POST".equals(requestType)) {
-            RequestSpecification requestSpec = RestAssured.given().contentType(ContentType.JSON).body(test);
-            response = requestSpec.post(endpoint);
-        } else {
-            throw new InvalidDataException(requestType);
+        switch (requestType) {
+            case "GET":
+                response = request.get(endpoint);
+                break;
+            case "POST":
+                response = request.contentType(ContentType.JSON).body(malformedJsonRequest).post(endpoint);
+                break;
+            default:
+                throw new InvalidDataException(requestType + " is not a valid request");
         }
     }
-
-
-
 
 }
 

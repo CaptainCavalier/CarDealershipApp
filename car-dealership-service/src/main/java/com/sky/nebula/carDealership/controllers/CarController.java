@@ -1,7 +1,6 @@
 package com.sky.nebula.carDealership.controllers;
 
 
-
 import com.sky.nebula.carDealership.model.Car;
 import com.sky.nebula.carDealership.repository.CarRepository;
 import com.sky.nebula.carDealership.service.CarService;
@@ -10,10 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/cars")
@@ -47,4 +44,6 @@ public class CarController {
         return new ResponseEntity<String>("Database Cleared", HttpStatus.OK);
     }
 
+    public void addCar(String malformedJsonRequest) {
+    }
 }
