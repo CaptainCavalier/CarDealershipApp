@@ -2,6 +2,8 @@ package com.sky.nebula.carDealership.functional.stepdefinitions;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sky.nebula.carDealership.controllers.CarController;
+import com.sky.nebula.carDealership.exceptions.InvalidDataException;
 import com.sky.nebula.carDealership.functional.config.datatabletype.Car;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.DataTableType;
@@ -16,19 +18,18 @@ import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.test.annotation.DirtiesContext;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
-public class PrivateStepDefinitions {
+public class FeatureStepDefinitions {
 
+    CarController carController;
     Response response;
 
-    String requestData;
-
     String json;
+    ObjectMapper mapper = new ObjectMapper();
 
     private RequestSpecification request = given();
 
@@ -109,51 +110,45 @@ public class PrivateStepDefinitions {
             Assertions.assertEquals(expectedCar.getMileage(), actualCar.getMileage());
             Assertions.assertEquals(expectedCar.getColour(), actualCar.getColour());
         }
-        System.out.println(expectedCars);
-        System.out.println(actualCars);
     }
 
-//    @Given("the client sends a {string} request to {string} endpoint")
-//    public void theClientSendsARequestToEndpoint(String requestType, String endpoint, List<Car> carList) {
-//        switch (requestType) {
-//            case "GET": response = request.get(endpoint);
-//                break;
-//            case "POST": response = request.post(endpoint, carEntry
-//                break;
-//            default:
-//                throw new RuntimeException(requestType + " is not a valid request");
-//        }
-//    }
-
-@DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD) //Until this line was added the test would fail because it wasn't clearing the database after each run. HOWEVER running the get request on postman is returning multiple values
+@DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     @Given("the client sends a {string} request to {string} endpoint with the following:")
-    public void theClientSendsARequestToEndpointWithTheFollowing(String requestType, String endpoint, DataTable dataTable) {
-        List<Map<String, String>> dataTableList = dataTable.asMaps(String.class, String.class); // will be a list of the 6 values of car model
+    public void theClientSendsARequestToEndpointWithTheFollowing(String requestType, String endpoint, DataTable dataTable) throws InvalidDataException {
 
-        // for (Map<String, String> tableMap : dataTableList) {
-//            Map<String, String> replacedMap = new HashMap<>();
-//            tableMap.forEach((key, value) -> {
-//                replacedMap.put(key, value.equals("") ? "" : value);
-//            });
-//
-//        }
+//    mapper.setSerializerProvider().setNullKeySerializer(new MyDtoNullKeySerializer());
+
+        List<Map<String, String>> dataTableList = dataTable.asMaps(String.class, String.class);
 
         switch (requestType) {
             case "GET": response = request.get(endpoint);
                 break;
             case "POST":
+
                 RequestSpecification requestSpec = RestAssured.given().contentType(ContentType.JSON).body(dataTableList);
                 response = requestSpec.post(endpoint);
                 break;
 
             default:
-                throw new RuntimeException(requestType + " is not a valid request");
+                throw new InvalidDataException(requestType + " is not a valid request");
         }
     }
 
-    @Given("The database is empty")
-    public void deleteCars() {
-        request.delete("/cars/admin/delete");
+    @Given("the client sends a {string} request to {string} endpoint with a malformed json list")
+    public void theClientSendsARequestToEndpointWithAMalformedJsonList(String requestType, String endpoint) {
+        String malformedJsonRequest = "This is not a JSON List of a car";
+
+        switch (requestType) {
+            case "GET":
+                response = request.get(endpoint);
+                break;
+            case "POST":
+                response = request.contentType(ContentType.JSON).body(malformedJsonRequest).post(endpoint);
+                break;
+            default:
+                throw new InvalidDataException(requestType + " is not a valid request");
+        }
     }
+
 }
 

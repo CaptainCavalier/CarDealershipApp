@@ -1,31 +1,67 @@
 package com.sky.nebula.carDealership.service;
 
+import com.sky.nebula.carDealership.exceptions.CarAlreadyExistsException;
+import com.sky.nebula.carDealership.exceptions.InvalidDataException;
+import com.sky.nebula.carDealership.globalExceptionHandler.GlobalExceptionHandler;
 import com.sky.nebula.carDealership.model.Car;
 import com.sky.nebula.carDealership.repository.CarRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 
 @Service
 public class CarService {
 
     private CarRepository carRepository;
 
+
     public CarService(CarRepository carRepository) {
         this.carRepository = carRepository;
     }
 
-    public void addCar(List<Car> carList) {
+    public List<Car> addCar(List<Car> carList) {
+        List<Car> newCars = new ArrayList<>();
 
-        carRepository.saveAll(carList);
+        for (Car car : carList) {
+            if ((car.getBrand() == null) || car.getBrand().isEmpty() ||
+                    (car.getModel() == null) || car.getModel().isEmpty() ||
+                    (car.getYear() == null) || (car.getYear().toString().length() != 4) ||
+                    (car.getPrice() == null) || car.getPrice().equals(0) ||
+                    (car.getMileage() == null) || car.getMileage().equals(0) ||
+                    (car.getColour() == null) || car.getColour().isEmpty()) {
+
+                throw new InvalidDataException(String.valueOf(Map.of("Description", "Incorrect car data provided")), HttpStatus.BAD_REQUEST);
+            }
+
+            if (carRepository.existsByBrandAndModelAndYearAndPriceAndMileageAndColour(
+                    car.getBrand(),
+                    car.getModel(),
+                    car.getYear(),
+                    car.getPrice(),
+                    car.getMileage(),
+                    car.getColour())) {
+                throw new CarAlreadyExistsException("Description", "Car already exists");
+            }
+
+            newCars.add(car);
+        }
+
+        return carRepository.saveAll(newCars);
     }
+
 
     public List<Car> getAllCars() {
 
-        return carRepository.findAll();
-    }
+            return carRepository.findAll();
+        }
 
-    public void deleteAllCars() {
-        carRepository.deleteAll();
-    }
+        public void deleteAllCars() {
+            carRepository.deleteAll();
+        }
+
 }
+

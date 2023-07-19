@@ -1,7 +1,6 @@
 Feature: testing get all cars endpoint
 
   Scenario: the client makes a get request to the cars/admin endpoint and receives a 200 status code and body of OK
-    Given The database is empty
     Given the client sends a "POST" request to "/cars/admin" endpoint with the following:
       | brand | model | year | price  | mileage | colour     |
       | BMW   | X5    | 2022 | 80000  | 10000   | space grey |
