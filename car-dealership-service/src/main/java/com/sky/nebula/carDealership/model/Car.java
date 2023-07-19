@@ -9,6 +9,10 @@ import jakarta.validation.constraints.NotBlank;
 @Table(name="cars")
 public class Car {
 
+    public Car() {
+
+    }
+
     public Car(String s){
 
     }

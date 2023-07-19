@@ -5,7 +5,7 @@ Feature: testing add car endpoint
     | brand | model | year | price  | mileage | colour     |
     | BMW   | X5    | 2022 | 80000  | 10000   | space grey |
     | BMW   | X6    | 2023 | 100000 | 1000    | sky blue   |
-    When client sends a "POST" request to "/cars/admin" endpoint
+    When client sends a "POST" request to "/cars/admin/post" endpoint
     Then the response should have a status code of 201
     And the response body should have the key '{"Description":"Database Updated"}'
 

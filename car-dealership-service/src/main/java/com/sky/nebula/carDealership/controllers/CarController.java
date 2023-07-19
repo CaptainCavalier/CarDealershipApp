@@ -24,7 +24,7 @@ public class CarController {
         this.carService = carService;
     }
 
-    @PostMapping("/admin")
+    @PostMapping("/admin/post")
     public ResponseEntity<Map<String, String>> addCar(@Valid @RequestBody List<Car> car) {
 
         carService.addCar(car);
@@ -32,7 +32,7 @@ public class CarController {
         }
 
 
-    @GetMapping("/admin")
+    @GetMapping("/admin/get")
     public ResponseEntity<List<Car>> getAllCars() {
         List<Car> cars = carService.getAllCars();
         return new ResponseEntity<>(cars, HttpStatus.OK);

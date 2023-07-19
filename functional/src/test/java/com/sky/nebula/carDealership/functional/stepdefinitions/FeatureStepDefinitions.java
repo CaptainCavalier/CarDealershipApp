@@ -112,25 +112,19 @@ public class FeatureStepDefinitions {
         }
     }
 
-@DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     @Given("the client sends a {string} request to {string} endpoint with the following:")
     public void theClientSendsARequestToEndpointWithTheFollowing(String requestType, String endpoint, DataTable dataTable) throws InvalidDataException {
-
-//    mapper.setSerializerProvider().setNullKeySerializer(new MyDtoNullKeySerializer());
 
         List<Map<String, String>> dataTableList = dataTable.asMaps(String.class, String.class);
 
         switch (requestType) {
-            case "GET": response = request.get(endpoint);
-                break;
-            case "POST":
-
+            case "GET" -> response = request.get(endpoint);
+            case "POST" -> {
                 RequestSpecification requestSpec = RestAssured.given().contentType(ContentType.JSON).body(dataTableList);
                 response = requestSpec.post(endpoint);
-                break;
-
-            default:
-                throw new InvalidDataException(requestType + " is not a valid request");
+            }
+            default -> throw new InvalidDataException(requestType + " is not a valid request");
         }
     }
 
