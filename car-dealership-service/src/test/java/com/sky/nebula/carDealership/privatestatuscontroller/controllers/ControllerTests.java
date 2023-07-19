@@ -1,32 +1,30 @@
 package com.sky.nebula.carDealership.privatestatuscontroller.controllers;
 
 import com.sky.nebula.carDealership.controllers.CarController;
-import com.sky.nebula.carDealership.globalExceptionHandler.GlobalExceptionHandler;
 import com.sky.nebula.carDealership.model.Car;
+import com.sky.nebula.carDealership.repository.CarRepository;
 import com.sky.nebula.carDealership.service.CarService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
 public class ControllerTests {
 
-    @InjectMocks
-    CarController carController;
-
-    @Mock
-    CarService carService;
+    CarRepository carRepository = mock(CarRepository.class);
+    CarService carService = new CarService(carRepository);
+    CarController carController = new CarController(carService);
 
 
     // Need to test car is actually added in the addCar method
@@ -51,13 +49,37 @@ public class ControllerTests {
     }
 
     @Test
+    public void getCarByBrandReturns200AndResponse() {
+        String targetBrand = "BMW";
+
+        // Arrange
+        Car car1 = new Car(targetBrand, "X5", 2022, 80000, 10000, "space grey");
+        Car car2 = new Car(targetBrand, "X3", 2021, 75000, 12000, "white");
+        Car car3 = new Car("Nissan", "Micra", 2006, 800, 100000, "black");
+
+        List<Car> targetCars = List.of(car1, car2);
+
+        Mockito.when(carRepository.findByBrand(targetBrand)).thenReturn(targetCars);
+        Mockito.when(carService.getBrand(targetBrand)).thenReturn(targetCars);
+
+        // Act
+        ResponseEntity<List<Car>> response = carController.getBrand(targetBrand);
+
+        // Assert
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals(targetCars, response.getBody());
+
+        System.out.println(response);
+    }
+
+    @Test
     void getAllCarsEndpointReturns200AndResponse() {
         // Arrange
         Car car1 = new Car("BMW", "X5", 2022, 80000, 10000, "space grey");
         Car car2 = new Car("BMW", "X6", 2023, 100000, 1000, "sky blue");
         List<Car> carList =  List.of(car1, car2);
 
-        Mockito.when(carService.getAllCars()).thenReturn(carList);
+        when(carService.getAllCars()).thenReturn(carList);
 
         // Act
         ResponseEntity<List<Car>> response = carController.getAllCars();
@@ -67,7 +89,6 @@ public class ControllerTests {
         Assertions.assertEquals(carList, response.getBody());
 
         System.out.println(response);
-
     }
 
 }

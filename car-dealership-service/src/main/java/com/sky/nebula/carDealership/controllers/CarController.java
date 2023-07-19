@@ -29,8 +29,14 @@ public class CarController {
 
         carService.addCar(car);
         return new ResponseEntity<>(Map.of("Description", "Database Updated"), HttpStatus.CREATED);
-        }
+    }
 
+    @GetMapping("admin/brand={brand}")
+    public ResponseEntity<List<Car>> getBrand(@PathVariable String brand) {
+        List<Car> carsByBrand = carService.getBrand(brand);
+        //return list of cars with the same brand
+        return new ResponseEntity<>(carsByBrand, HttpStatus.OK);
+    }
 
     @GetMapping("/admin/get")
     public ResponseEntity<List<Car>> getAllCars() {
@@ -46,4 +52,5 @@ public class CarController {
 
     public void addCar(String malformedJsonRequest) {
     }
+
 }

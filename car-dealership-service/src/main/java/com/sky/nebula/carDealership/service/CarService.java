@@ -53,15 +53,16 @@ public class CarService {
         return carRepository.saveAll(newCars);
     }
 
+    public List<Car> getBrand(String brand) {
+        return carRepository.findByBrand(brand);
+    }
 
     public List<Car> getAllCars() {
+        return carRepository.findAll();
+    }
 
-            return carRepository.findAll();
-        }
-
-        public void deleteAllCars() {
+    public void deleteAllCars() {
             carRepository.deleteAll();
         }
-
 }
 
