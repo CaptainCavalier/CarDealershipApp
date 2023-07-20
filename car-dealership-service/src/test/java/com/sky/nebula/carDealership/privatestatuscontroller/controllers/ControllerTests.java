@@ -12,8 +12,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -49,30 +51,6 @@ public class ControllerTests {
     }
 
     @Test
-    public void getCarByBrandReturns200AndResponse() {
-        String targetBrand = "BMW";
-
-        // Arrange
-        Car car1 = new Car(targetBrand, "X5", 2022, 80000, 10000, "space grey");
-        Car car2 = new Car(targetBrand, "X3", 2021, 75000, 12000, "white");
-        Car car3 = new Car("Nissan", "Micra", 2006, 800, 100000, "black");
-
-        List<Car> targetCars = List.of(car1, car2);
-
-        Mockito.when(carRepository.findByBrand(targetBrand)).thenReturn(targetCars);
-        Mockito.when(carService.getBrand(targetBrand)).thenReturn(targetCars);
-
-        // Act
-        ResponseEntity<List<Car>> response = carController.getBrand(targetBrand);
-
-        // Assert
-        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
-        Assertions.assertEquals(targetCars, response.getBody());
-
-        System.out.println(response);
-    }
-
-    @Test
     void getAllCarsEndpointReturns200AndResponse() {
         // Arrange
         Car car1 = new Car("BMW", "X5", 2022, 80000, 10000, "space grey");
@@ -87,6 +65,179 @@ public class ControllerTests {
         // Assert
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Assertions.assertEquals(carList, response.getBody());
+
+        System.out.println(response);
+    }
+
+    @Test
+    public void getCarByBrandReturns200AndResponse() {
+        String targetBrand = "BMW";
+
+        // Arrange
+        Car car1 = new Car(targetBrand, "X5", 2022, 80000, 10000, "space grey");
+        Car car2 = new Car(targetBrand, "X3", 2021, 75000, 12000, "white");
+        Car car3 = new Car("Nissan", "Micra", 2006, 800, 100000, "black");
+
+        List<Car> allCars = List.of(car1, car2, car3);
+
+        // Mocks list of cars with target brand
+        Mockito.when(carService.getBrand(targetBrand))
+                .thenReturn(allCars.stream()
+                        .filter(car -> car.getBrand().equals(targetBrand))
+                        .collect(Collectors.toList()));
+
+        // Act
+        ResponseEntity<List<Car>> response = carController.getBrand(targetBrand);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(allCars.stream()
+                .filter(car -> car.getBrand().equals(targetBrand))
+                .collect(Collectors.toList()), response.getBody());
+
+        System.out.println(response);
+    }
+
+    @Test
+    public void getCarByModelReturns200AndResponse() {
+        String targetModel = "Micra";
+
+        // Arrange
+        Car car1 = new Car("BMW", "X5", 2022, 80000, 10000, "space grey");
+        Car car2 = new Car("Nissan", targetModel, 2006, 800, 100000, "white");
+        Car car3 = new Car("Nissan", targetModel, 2006, 800, 100000, "black");
+
+        List<Car> allCars = List.of(car1, car2, car3);
+
+        Mockito.when(carService.getModel(targetModel))
+                .thenReturn(allCars.stream()
+                        .filter(car -> car.getModel().equals(targetModel))
+                        .collect(Collectors.toList()));
+
+        // Act
+        ResponseEntity<List<Car>> response = carController.getModel(targetModel);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(allCars.stream()
+                .filter(car -> car.getModel().equals(targetModel))
+                .collect(Collectors.toList()), response.getBody());
+
+        System.out.println(response);
+    }
+
+    @Test
+    public void getCarByYearReturns200AndResponse() {
+        int targetYear = 2006;
+
+        // Arrange
+        Car car1 = new Car("BMW", "X5", 2022, 80000, 10000, "space grey");
+        Car car2 = new Car("BMW", "X3", targetYear, 75000, 12000, "white");
+        Car car3 = new Car("Nissan", "Micra", targetYear, 800, 100000, "black");
+
+        List<Car> allCars = List.of(car1, car2, car3);
+
+        // Mocks list of cars with target brand
+        Mockito.when(carService.getYear(targetYear))
+                .thenReturn(allCars.stream()
+                        .filter(car -> car.getYear().equals(targetYear))
+                        .collect(Collectors.toList()));
+
+        // Act
+        ResponseEntity<List<Car>> response = carController.getYear(targetYear);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(allCars.stream()
+                .filter(car -> car.getYear().equals(targetYear))
+                .collect(Collectors.toList()), response.getBody());
+
+        System.out.println(response);
+    }
+
+    @Test
+    public void getCarByPriceReturns200AndResponse() {
+        int targetPrice = 80000;
+
+        // Arrange
+        Car car1 = new Car("BMW", "X5", 2022, targetPrice, 10000, "space grey");
+        Car car2 = new Car("BMW", "X3", 2023, targetPrice, 12000, "white");
+        Car car3 = new Car("Nissan", "Micra", 2006, 800, 100000, "black");
+
+        List<Car> allCars = List.of(car1, car2, car3);
+
+        // Mocks list of cars with target brand
+        Mockito.when(carService.getPrice(targetPrice))
+                .thenReturn(allCars.stream()
+                        .filter(car -> car.getPrice().equals(targetPrice))
+                        .collect(Collectors.toList()));
+
+        // Act
+        ResponseEntity<List<Car>> response = carController.getPrice(targetPrice);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(allCars.stream()
+                .filter(car -> car.getPrice().equals(targetPrice))
+                .collect(Collectors.toList()), response.getBody());
+
+        System.out.println(response);
+    }
+
+    @Test
+    public void getCarByMileageReturns200AndResponse() {
+        int targetMileage = 10000;
+
+        // Arrange
+        Car car1 = new Car("BMW", "X5", 2022, 80000, targetMileage, "space grey");
+        Car car2 = new Car("BMW", "X3", 2023, 100000, targetMileage, "white");
+        Car car3 = new Car("Nissan", "Micra", 2006, 800, 100000, "black");
+
+        List<Car> allCars = List.of(car1, car2, car3);
+
+        // Mocks list of cars with target brand
+        Mockito.when(carService.getMileage(targetMileage))
+                .thenReturn(allCars.stream()
+                        .filter(car -> car.getMileage().equals(targetMileage))
+                        .collect(Collectors.toList()));
+
+        // Act
+        ResponseEntity<List<Car>> response = carController.getMileage(targetMileage);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(allCars.stream()
+                .filter(car -> car.getMileage().equals(targetMileage))
+                .collect(Collectors.toList()), response.getBody());
+
+        System.out.println(response);
+    }
+
+    @Test
+    public void getCarByColourReturns200AndResponse() {
+        String  targetColour = "blue";
+
+        // Arrange
+        Car car1 = new Car("BMW", "X5", 2022, 80000, 1000, targetColour);
+        Car car2 = new Car("BMW", "X3", 2023, 100000, 100, "white");
+        Car car3 = new Car("Nissan", "Micra", 2006, 800, 100000, targetColour);
+
+        List<Car> allCars = List.of(car1, car2, car3);
+
+        // Mocks list of cars with target brand
+        Mockito.when(carService.getColour(targetColour))
+                .thenReturn(allCars.stream()
+                        .filter(car -> car.getColour().equals(targetColour))
+                        .collect(Collectors.toList()));
+
+        // Act
+        ResponseEntity<List<Car>> response = carController.getColour(targetColour);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(allCars.stream()
+                .filter(car -> car.getColour().equals(targetColour))
+                .collect(Collectors.toList()), response.getBody());
 
         System.out.println(response);
     }

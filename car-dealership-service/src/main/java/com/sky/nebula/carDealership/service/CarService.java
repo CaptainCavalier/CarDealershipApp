@@ -53,16 +53,37 @@ public class CarService {
         return carRepository.saveAll(newCars);
     }
 
+    public List<Car> getAllCars() {
+        return carRepository.findAll();
+    }
+
     public List<Car> getBrand(String brand) {
         return carRepository.findByBrand(brand);
     }
 
-    public List<Car> getAllCars() {
-        return carRepository.findAll();
+    public List<Car> getModel(String model) {
+        return carRepository.findByModel(model);
+    }
+
+    public List<Car> getYear(int year) {
+        return carRepository.findByYear(year);
+    }
+
+    public List<Car> getPrice(int price) {
+        return carRepository.findByPrice(price);
+    }
+
+    public List<Car> getMileage(int mileage) {
+        return carRepository.findByMileage(mileage);
+    }
+
+    public List<Car> getColour(String colour) {
+        return carRepository.findByColour(colour);
     }
 
     public void deleteAllCars() {
             carRepository.deleteAll();
         }
+
 }
 

@@ -31,6 +31,12 @@ public class CarController {
         return new ResponseEntity<>(Map.of("Description", "Database Updated"), HttpStatus.CREATED);
     }
 
+    @GetMapping("/admin/get")
+    public ResponseEntity<List<Car>> getAllCars() {
+        List<Car> cars = carService.getAllCars();
+        return new ResponseEntity<>(cars, HttpStatus.OK);
+    }
+
     @GetMapping("admin/brand={brand}")
     public ResponseEntity<List<Car>> getBrand(@PathVariable String brand) {
         List<Car> carsByBrand = carService.getBrand(brand);
@@ -38,10 +44,34 @@ public class CarController {
         return new ResponseEntity<>(carsByBrand, HttpStatus.OK);
     }
 
-    @GetMapping("/admin/get")
-    public ResponseEntity<List<Car>> getAllCars() {
-        List<Car> cars = carService.getAllCars();
-        return new ResponseEntity<>(cars, HttpStatus.OK);
+    @GetMapping("admin/model={model}")
+    public ResponseEntity<List<Car>> getModel(@PathVariable String model) {
+        List<Car> carsByModel = carService.getModel(model);
+        return new ResponseEntity<>(carsByModel, HttpStatus.OK);
+    }
+
+    @GetMapping("admin/year={year}")
+    public ResponseEntity<List<Car>> getYear(@PathVariable int year) {
+        List<Car> carsByYear = carService.getYear(year);
+        return new ResponseEntity<>(carsByYear, HttpStatus.OK);
+    }
+
+    @GetMapping("admin/price={price}")
+    public ResponseEntity<List<Car>> getPrice(@PathVariable int price) {
+        List<Car> carsByPrice = carService.getPrice(price);
+        return new ResponseEntity<>(carsByPrice, HttpStatus.OK);
+    }
+
+    @GetMapping("admin/mileage={mileage}")
+    public ResponseEntity<List<Car>> getMileage(@PathVariable int mileage) {
+        List<Car> carsByMileage = carService.getMileage(mileage);
+        return new ResponseEntity<>(carsByMileage, HttpStatus.OK);
+    }
+
+    @GetMapping("admin/colour={colour}")
+    public ResponseEntity<List<Car>> getColour(@PathVariable String colour) {
+        List<Car> carsByColour = carService.getColour(colour);
+        return new ResponseEntity<>(carsByColour, HttpStatus.OK);
     }
 
     @DeleteMapping("/admin/delete")
