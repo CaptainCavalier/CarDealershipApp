@@ -108,7 +108,7 @@ public class CarService {
 
     public void deleteAllCars() {
             carRepository.deleteAll();
-        }
+    }
 
 }
 
