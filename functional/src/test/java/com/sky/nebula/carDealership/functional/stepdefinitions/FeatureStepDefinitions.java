@@ -17,6 +17,7 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
@@ -47,11 +48,14 @@ public class FeatureStepDefinitions {
 
     @When("client sends a {string} request to {string} endpoint")
     public void clientSendsARequestToEndpoint(String requestType, String endpoint) {
+
         switch (requestType) {
-            case "GET": response = request.get(endpoint);
-            break;
-            case "POST": response = request.post(endpoint);
-            break;
+            case "GET":
+                response = request.get(endpoint);
+                break;
+            case "POST":
+                response = request.post(endpoint);
+                break;
             case "DELETE":
                 response = request.delete(endpoint);
                 break;

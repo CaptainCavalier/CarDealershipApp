@@ -38,38 +38,38 @@ public class CarController {
     }
 
     @GetMapping("admin/brand")
-    public ResponseEntity<List<Car>> getBrand(@RequestParam("brand") String brand) {
+    public ResponseEntity<List<Car>> getBrand(@Valid @RequestParam("brand") String brand) {
         List<Car> carsByBrand = carService.getBrand(brand);
         //return list of cars with the same brand
         return new ResponseEntity<>(carsByBrand, HttpStatus.OK);
     }
 
     @GetMapping("admin/model")
-    public ResponseEntity<List<Car>> getModel(@RequestParam("model") String model) {
+    public ResponseEntity<List<Car>> getModel(@Valid @RequestParam("model") String model) {
         List<Car> carsByModel = carService.getModel(model);
         return new ResponseEntity<>(carsByModel, HttpStatus.OK);
     }
 
     @GetMapping("admin/year")
-    public ResponseEntity<List<Car>> getYear(@RequestParam("year") int year) {
+    public ResponseEntity<List<Car>> getYear(@Valid @RequestParam("year") int year) {
         List<Car> carsByYear = carService.getYear(year);
         return new ResponseEntity<>(carsByYear, HttpStatus.OK);
     }
 
     @GetMapping("admin/price")
-    public ResponseEntity<List<Car>> getPrice(@RequestParam("price") int price) {
+    public ResponseEntity<List<Car>> getPrice(@Valid @RequestParam("price") int price) {
         List<Car> carsByPrice = carService.getPrice(price);
         return new ResponseEntity<>(carsByPrice, HttpStatus.OK);
     }
 
     @GetMapping("admin/mileage")
-    public ResponseEntity<List<Car>> getMileage(@RequestParam("mileage") int mileage) {
+    public ResponseEntity<List<Car>> getMileage(@Valid @RequestParam("mileage") int mileage) {
         List<Car> carsByMileage = carService.getMileage(mileage);
         return new ResponseEntity<>(carsByMileage, HttpStatus.OK);
     }
 
     @GetMapping("admin/colour")
-    public ResponseEntity<List<Car>> getColour(@RequestParam("colour") String colour) {
+    public ResponseEntity<List<Car>> getColour(@Valid @RequestParam("colour") String colour) {
         List<Car> carsByColour = carService.getColour(colour);
         return new ResponseEntity<>(carsByColour, HttpStatus.OK);
     }

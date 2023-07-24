@@ -112,6 +112,13 @@ public class ExceptionHandlerTests {
         Assertions.assertTrue(response.getBody().containsKey(key));
         Assertions.assertTrue(response.getBody().containsValue(value));
     }
+
+    @Test
+    void testTest() {
+        Car car = new Car("BMW", "", 2022, 10000, 100000, "space grey");
+
+        System.out.println(car.getModel().isEmpty());
+    }
 }
 
 

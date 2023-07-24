@@ -22,6 +22,7 @@ public class Car {
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank
     private String brand;
 
     @Column(nullable = false)
