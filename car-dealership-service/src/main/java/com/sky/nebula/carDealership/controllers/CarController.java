@@ -29,13 +29,49 @@ public class CarController {
 
         carService.addCar(car);
         return new ResponseEntity<>(Map.of("Description", "Database Updated"), HttpStatus.CREATED);
-        }
-
+    }
 
     @GetMapping("/admin/get")
     public ResponseEntity<List<Car>> getAllCars() {
         List<Car> cars = carService.getAllCars();
         return new ResponseEntity<>(cars, HttpStatus.OK);
+    }
+
+    @GetMapping("admin/brand")
+    public ResponseEntity<List<Car>> getBrand(@RequestParam("brand") String brand) {
+        List<Car> carsByBrand = carService.getBrand(brand);
+        //return list of cars with the same brand
+        return new ResponseEntity<>(carsByBrand, HttpStatus.OK);
+    }
+
+    @GetMapping("admin/model")
+    public ResponseEntity<List<Car>> getModel(@RequestParam("model") String model) {
+        List<Car> carsByModel = carService.getModel(model);
+        return new ResponseEntity<>(carsByModel, HttpStatus.OK);
+    }
+
+    @GetMapping("admin/year")
+    public ResponseEntity<List<Car>> getYear(@RequestParam("year") int year) {
+        List<Car> carsByYear = carService.getYear(year);
+        return new ResponseEntity<>(carsByYear, HttpStatus.OK);
+    }
+
+    @GetMapping("admin/price")
+    public ResponseEntity<List<Car>> getPrice(@RequestParam("price") int price) {
+        List<Car> carsByPrice = carService.getPrice(price);
+        return new ResponseEntity<>(carsByPrice, HttpStatus.OK);
+    }
+
+    @GetMapping("admin/mileage")
+    public ResponseEntity<List<Car>> getMileage(@RequestParam("mileage") int mileage) {
+        List<Car> carsByMileage = carService.getMileage(mileage);
+        return new ResponseEntity<>(carsByMileage, HttpStatus.OK);
+    }
+
+    @GetMapping("admin/colour")
+    public ResponseEntity<List<Car>> getColour(@RequestParam("colour") String colour) {
+        List<Car> carsByColour = carService.getColour(colour);
+        return new ResponseEntity<>(carsByColour, HttpStatus.OK);
     }
 
     @DeleteMapping("/admin/delete")
@@ -46,4 +82,5 @@ public class CarController {
 
     public void addCar(String malformedJsonRequest) {
     }
+
 }

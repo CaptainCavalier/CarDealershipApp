@@ -1,11 +1,10 @@
 package com.sky.nebula.carDealership.repository;
 
 import com.sky.nebula.carDealership.model.Car;
-import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.awt.print.Pageable;
-import java.util.Optional;
+import java.util.List;
+
 
 
 public interface CarRepository extends JpaRepository<Car, Long> {
@@ -18,5 +17,11 @@ public interface CarRepository extends JpaRepository<Car, Long> {
             Integer mileage,
             String colour
     );
+    List<Car> findByBrand(String brand);
+    List<Car> findByModel(String model);
+    List<Car> findByYear(int year);
+    List<Car> findByPrice(int price);
+    List<Car> findByMileage(int mileage);
+    List<Car> findByColour(String colour);
 }
 

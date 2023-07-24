@@ -2,15 +2,16 @@ package com.sky.nebula.carDealership.service;
 
 import com.sky.nebula.carDealership.exceptions.CarAlreadyExistsException;
 import com.sky.nebula.carDealership.exceptions.InvalidDataException;
-import com.sky.nebula.carDealership.globalExceptionHandler.GlobalExceptionHandler;
 import com.sky.nebula.carDealership.model.Car;
 import com.sky.nebula.carDealership.repository.CarRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -53,15 +54,61 @@ public class CarService {
         return carRepository.saveAll(newCars);
     }
 
-
     public List<Car> getAllCars() {
+        return carRepository.findAll();
+    }
 
-            return carRepository.findAll();
-        }
+    public List<Car> getBrand(String brand) {
+        List<Car> brandList = carRepository.findByBrand(brand).stream()
+                .sorted(Comparator.comparingInt(Car::getYear).reversed())
+                .collect(Collectors.toList());
 
-        public void deleteAllCars() {
+        return brandList;
+    }
+
+    public List<Car> getModel(String model) {
+        List<Car> modelList = carRepository.findByModel(model).stream()
+                .sorted(Comparator.comparingInt(Car::getPrice))
+                .collect(Collectors.toList());
+
+        return modelList;
+    }
+
+    public List<Car> getYear(int year) {
+        List<Car> yearList = carRepository.findByYear(year).stream()
+                .sorted(Comparator.comparing(car -> car.getBrand().toLowerCase()))
+                .collect(Collectors.toList());
+
+        return yearList;
+    }
+
+    public List<Car> getPrice(int price) {
+        List<Car> priceList = carRepository.findByPrice(price).stream()
+                .sorted(Comparator.comparing(Car::getYear).reversed())
+                .collect(Collectors.toList());
+
+        return priceList;
+    }
+
+    public List<Car> getMileage(int mileage) {
+        List<Car> mileageList = carRepository.findByMileage(mileage).stream()
+                .sorted(Comparator.comparing(car -> car.getBrand().toLowerCase()))
+                .collect(Collectors.toList());
+
+        return mileageList;
+    }
+
+    public List<Car> getColour(String colour) {
+        List<Car> colourList = carRepository.findByColour(colour).stream()
+                .sorted(Comparator.comparing(car -> car.getModel().toLowerCase()))
+                .collect(Collectors.toList());
+
+        return colourList;
+    }
+
+    public void deleteAllCars() {
             carRepository.deleteAll();
-        }
+    }
 
 }
 

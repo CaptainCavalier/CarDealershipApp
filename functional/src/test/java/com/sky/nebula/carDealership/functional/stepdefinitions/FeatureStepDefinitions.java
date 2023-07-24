@@ -52,6 +52,9 @@ public class FeatureStepDefinitions {
             break;
             case "POST": response = request.post(endpoint);
             break;
+            case "DELETE":
+                response = request.delete(endpoint);
+                break;
             default:
                 throw new RuntimeException(requestType + " is not a valid request");
         }
@@ -144,5 +147,15 @@ public class FeatureStepDefinitions {
         }
     }
 
+    @Then("clear the database for the next test")
+    public void clearTheDatabaseForTheNextTest(DataTable dataTable) {
+        List<Map<String, String>> dataTableList = dataTable.asMaps(String.class, String.class);
+
+        carController.deleteAllCars();
+    }
+
+    @Then("clear the database for the next test by calling the {string} endpoint")
+    public void clearTheDatabaseForTheNextTestByCallingTheEndpoint(String endpoint) {
+    }
 }
 
