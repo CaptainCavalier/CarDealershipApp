@@ -8,8 +8,6 @@ import com.sky.nebula.carDealership.globalExceptionHandler.GlobalExceptionHandle
 import com.sky.nebula.carDealership.model.Car;
 import com.sky.nebula.carDealership.repository.CarRepository;
 import com.sky.nebula.carDealership.service.CarService;
-import io.cucumber.core.internal.com.fasterxml.jackson.core.ObjectCodec;
-import io.cucumber.core.internal.com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.json.JsonParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -93,8 +90,6 @@ public class ExceptionHandlerTests {
     @Test
     void handleMalformedAttributeNameTest() throws HttpMessageNotReadableException {
 
-//        String malformedJson = "{\brand\: \"BMW\", \"model\": \"A5\", \"year\": 1900, \"price\": 10000, \"mileage\": 663000, \"colour\": \"sky blue\" }";
-
         String malformedJson = "this is not a json list of cars";
 
         Assertions.assertThrows(InvalidDataException.class, () -> {
@@ -113,12 +108,6 @@ public class ExceptionHandlerTests {
         Assertions.assertTrue(response.getBody().containsValue(value));
     }
 
-    @Test
-    void testTest() {
-        Car car = new Car("BMW", "", 2022, 10000, 100000, "space grey");
-
-        System.out.println(car.getModel().isEmpty());
-    }
 }
 
 
