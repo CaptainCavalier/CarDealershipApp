@@ -70,7 +70,7 @@ public class CarService {
         }
 
         // Calls method to validate request parameter variable
-        if (validator.requestParameterValidation(brand)) {
+        if (validator.validateString(brand)) {
 
             //stream to create list, find by brand, and sort by newest to oldest
             List<Car> brandList = carRepository.findByBrand(brand).stream()
@@ -86,7 +86,7 @@ public class CarService {
     public List<Car> getModel(String model) {
         // Models can be numbers exclusively, no matching required
 
-        if (validator.requestParameterValidation(model)) {
+        if (validator.validateString(model)) {
             List<Car> modelList = carRepository.findByModel(model).stream()
                     .sorted(Comparator.comparingInt(Car::getPrice))
                     .collect(Collectors.toList());
@@ -98,7 +98,7 @@ public class CarService {
     }
 
     public List<Car> getYear(String year) {
-        if (validator.requestParameterValidation(year)) {
+        if (validator.validateString(year)) {
 
             // Using try catch block to catch letters where there should just be digits
             try {
@@ -117,7 +117,7 @@ public class CarService {
     }
 
     public List<Car> getPrice(String price) {
-        if (validator.requestParameterValidation(price)) {
+        if (validator.validateString(price)) {
             try {
                 List<Car> priceList = carRepository.findByPrice(Integer.parseInt(price)).stream()
                         .sorted(Comparator.comparing(Car::getYear).reversed())
@@ -133,7 +133,7 @@ public class CarService {
     }
 
     public List<Car> getMileage(String mileage) {
-        if (validator.requestParameterValidation(mileage)) {
+        if (validator.validateString(mileage)) {
             try {
                 List<Car> mileageList = carRepository.findByMileage(Integer.parseInt(mileage)).stream()
                         .sorted(Comparator.comparing(car -> car.getBrand().toLowerCase()))
@@ -155,7 +155,7 @@ public class CarService {
             throw new InvalidQueryParameterException(String.valueOf(Map.of("Description", "Incorrect query parameter provided")), HttpStatus.BAD_REQUEST);
         }
 
-        if (validator.requestParameterValidation(colour)) {
+        if (validator.validateString(colour)) {
             List<Car> colourList = carRepository.findByColour(colour).stream()
                     .sorted(Comparator.comparing(car -> car.getModel().toLowerCase()))
                     .collect(Collectors.toList());

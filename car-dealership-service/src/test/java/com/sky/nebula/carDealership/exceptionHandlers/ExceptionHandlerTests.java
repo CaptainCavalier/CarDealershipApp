@@ -4,6 +4,7 @@ package com.sky.nebula.carDealership.exceptionHandlers;
 import com.sky.nebula.carDealership.controllers.CarController;
 import com.sky.nebula.carDealership.exceptions.CarAlreadyExistsException;
 import com.sky.nebula.carDealership.exceptions.InvalidDataException;
+import com.sky.nebula.carDealership.exceptions.InvalidQueryParameterException;
 import com.sky.nebula.carDealership.globalExceptionHandler.GlobalExceptionHandler;
 import com.sky.nebula.carDealership.model.Car;
 import com.sky.nebula.carDealership.repository.CarRepository;
@@ -62,7 +63,6 @@ public class ExceptionHandlerTests {
 
         Assertions.assertThrows(CarAlreadyExistsException.class, () ->
                 carController.addCar(Collections.singletonList(car)));
-
         Assertions.assertEquals(expectedStatus, response.getStatusCode());
         Assertions.assertTrue(response.getBody().containsKey(key));
         Assertions.assertTrue(response.getBody().containsValue(value));
@@ -81,7 +81,6 @@ public class ExceptionHandlerTests {
 
         Assertions.assertThrows(InvalidDataException.class, () ->
                 carController.addCar(Collections.singletonList(testCarMissingData)));
-
         Assertions.assertEquals(expectedStatus, response.getStatusCode());
         Assertions.assertTrue(response.getBody().containsKey(key));
         Assertions.assertTrue(response.getBody().containsValue(value));
@@ -92,71 +91,36 @@ public class ExceptionHandlerTests {
 
         String malformedJson = "this is not a json list of cars";
 
-        Assertions.assertThrows(InvalidDataException.class, () -> {
-            carController.addCar(List.of(new Car(malformedJson)));
-
-        });
-
         ResponseEntity<Map<String, String>> response = globalExceptionHandler.handleInvalidInput();
 
         HttpStatus expectedStatus = HttpStatus.BAD_REQUEST;
         String key = "Description";
         String value = "Incorrect car data provided";
 
+        Assertions.assertThrows(InvalidDataException.class, () -> {
+            carController.addCar(List.of(new Car(malformedJson)));
+        });
         Assertions.assertEquals(expectedStatus, response.getStatusCode());
         Assertions.assertTrue(response.getBody().containsKey(key));
         Assertions.assertTrue(response.getBody().containsValue(value));
     }
 
+    @Test
+    void handleInvalidQueryParameterTest() throws InvalidQueryParameterException {
+
+        String invalidQueryParameter = "bent ley";
+
+        ResponseEntity<Map<String, String>> response = globalExceptionHandler.handleInvalidQueryParameter();
+
+        HttpStatus expectedStatus = HttpStatus.BAD_REQUEST;
+        String key = "Description";
+        String value = "Incorrect query parameter provided";
+
+        Assertions.assertThrows(InvalidQueryParameterException.class, () -> {
+            carController.getBrand(invalidQueryParameter);
+        });
+        Assertions.assertEquals(expectedStatus, response.getStatusCode());
+        Assertions.assertTrue(response.getBody().containsKey(key));
+        Assertions.assertTrue(response.getBody().containsValue(value));
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//    @Test
-//    void addCarInvalidAttributeDataReturns400AndErrorMessage() throws InvalidDataException {
-//
-//        String requestBody = "[{\"\":\"BMW\",\"model\":\"X6\",\"year\":2023,\"price\":18800,\"mileage\":10000,\"colour\":\"space grey\"}]";
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//
-//        HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
-//
-//        MockServerRequest.Builder restTemplate = null;
-//        ResponseEntity<Map<String, String>> response = restTemplate.exchange("/cars/admin", HttpMethod.POST, request, new ParameterizedTypeReference<Map<String, String>>() {});
-//
-//        HttpStatus expectedStatus = HttpStatus.BAD_REQUEST;
-//        String key = "Description";
-//        String value = "Incorrect car data provided";
-//
-//        Assertions.assertEquals(expectedStatus, response.getStatusCode());
-//        Assertions.assertTrue(response.getBody().containsKey(key));
-//        Assertions.assertTrue(response.getBody().containsValue(value));
-//    }
-//
