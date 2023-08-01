@@ -1,5 +1,8 @@
 package com.sky.nebula.carDealership.functional.config.datatabletype;
 
+import io.cucumber.core.internal.com.fasterxml.jackson.annotation.JsonTypeId;
+
+import javax.annotation.processing.Generated;
 import java.util.Objects;
 
 public class Car {
@@ -16,7 +19,7 @@ public class Car {
 
     private String colour;
 
-    public Car(String brand, String model, Integer year, Integer price, Integer mileage, String colour) {
+    public Car(long id, String brand, String model, Integer year, Integer price, Integer mileage, String colour) {
         this.brand = brand;
         this.model = model;
         this.year = year;

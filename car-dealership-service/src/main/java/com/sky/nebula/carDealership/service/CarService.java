@@ -9,10 +9,7 @@ import com.sky.nebula.carDealership.validators.RequestParameterValidation;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -164,6 +161,36 @@ public class CarService {
 
         throw new InvalidQueryParameterException(String.valueOf(Map.of("Description", "Incorrect query parameter provided")), HttpStatus.BAD_REQUEST);
     }
+
+    public void updateCar(Car updatedCar) {
+        // Retrieve the existing car from the database based on the ID.
+        Optional<Car> existingCarOptional = carRepository.findById(updatedCar.getId());
+
+        if (existingCarOptional.isEmpty()) {
+            throw new InvalidDataException(String.valueOf(Map.of("Description", "Incorrect car data provided")), HttpStatus.BAD_REQUEST);
+        } else {
+
+            // Get the existingCar object from the Optional if it exists.
+            Car existingCar = existingCarOptional.get();
+
+            // Now you can update the properties of the existingCar with the properties from updatedCar.
+            existingCar.setBrand(updatedCar.getBrand());
+            existingCar.setModel(updatedCar.getModel());
+            existingCar.setYear(updatedCar.getYear());
+            existingCar.setPrice(updatedCar.getPrice());
+            existingCar.setMileage(updatedCar.getMileage());
+            existingCar.setColour(updatedCar.getColour());
+
+            try {
+                // Save the updated car back to the repository.
+                carRepository.save(existingCar);
+            } catch (Exception e) {
+                // If any exception occurs during the saving process, you can throw a more meaningful exception.
+                throw new RuntimeException("Failed to update car data.", e);
+            }
+        }
+    }
+
 
     public void deleteAllCars() {
             carRepository.deleteAll();

@@ -15,7 +15,9 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -23,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.put;
 
 public class FeatureStepDefinitions {
 
@@ -34,9 +37,20 @@ public class FeatureStepDefinitions {
 
     private RequestSpecification request = given();
 
+    @BeforeEach
+    public void setup() {
+        carController.deleteAllCars();
+    }
+
+    @AfterEach
+    public void cleanup() {
+        carController.deleteAllCars();
+    }
+
     @DataTableType
     public Car carEntry(Map<String, String> entry) {
         return new Car(
+                Long.parseLong(entry.get("id")),
                 entry.get("brand"),
                 entry.get("model"),
                 Integer.parseInt(entry.get("year")),
@@ -76,9 +90,10 @@ public class FeatureStepDefinitions {
     }
 
     @Given("the body of the car model is")
-    public void theBodyOfTheCarModelIs(List<Car> cars) throws JsonProcessingException {
+    public void theBodyOfTheCarModelIs(DataTable dataTable) throws JsonProcessingException {
+        List<Map<String, String>> dataTableList = dataTable.asMaps(String.class, String.class);
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(cars);
+        String json = objectMapper.writeValueAsString(dataTableList);
         request = given().contentType(ContentType.JSON).body(json);
     }
 
@@ -158,8 +173,33 @@ public class FeatureStepDefinitions {
         carController.deleteAllCars();
     }
 
-    @Then("clear the database for the next test by calling the {string} endpoint")
-    public void clearTheDatabaseForTheNextTestByCallingTheEndpoint(String endpoint) {
+
+    @When("the client sends a {string} request to {string} endpoint to update a car with the following:")
+    public void theClientSendsARequestToEndpointToUpdateACarWithTheFollowingString(String requestType, String endpoint, DataTable dataTable) throws InvalidDataException {
+
+        List<Map<String, String>> dataTableList = dataTable.asMaps(String.class, String.class);
+
+        if (!"PUT".equals(requestType)) {
+            throw new InvalidDataException(requestType + " is not a valid request");
+        }
+
+        // Use the first row of the DataTable as the data for the PUT request
+        Map<String, String> putData = dataTableList.get(0);
+
+        // Convert the putData Map to JSON
+        String jsonData;
+        try {
+            jsonData = new ObjectMapper().writeValueAsString(putData);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to convert PUT data to JSON: " + e.getMessage(), e);
+        }
+
+        // Send the PUT request manually using RestAssured
+        response = given()
+                .contentType(ContentType.JSON)
+                .body(jsonData)
+                .put(endpoint);
     }
+
 }
 
