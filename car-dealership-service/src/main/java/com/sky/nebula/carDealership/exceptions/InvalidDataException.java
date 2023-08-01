@@ -11,6 +11,7 @@ public class InvalidDataException extends RuntimeException {
     public InvalidDataException(String errorCode, HttpStatus httpStatus) {
     }
 
+
     public String getErrorCode() {
         return errorCode;
     }

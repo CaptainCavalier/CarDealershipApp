@@ -4,6 +4,7 @@ import com.sky.nebula.carDealership.model.Car;
 import com.sky.nebula.carDealership.service.CarService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -74,6 +75,12 @@ public class CarController {
     public ResponseEntity<String> deleteAllCars() {
         carService.deleteAllCars();
         return new ResponseEntity<String>("Database Cleared", HttpStatus.OK);
+    }
+
+    @PutMapping("/admin/put")
+    public ResponseEntity<Map<String, String>> updateCar(@Valid @RequestBody Car updatedCar) {
+        carService.updateCar(updatedCar);
+        return new ResponseEntity<>(Map.of("Description", "Car updated"), HttpStatus.OK);
     }
 
 }

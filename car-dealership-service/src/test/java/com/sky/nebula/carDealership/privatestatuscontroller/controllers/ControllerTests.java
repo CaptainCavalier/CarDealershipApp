@@ -1,35 +1,34 @@
 package com.sky.nebula.carDealership.privatestatuscontroller.controllers;
 
 import com.sky.nebula.carDealership.controllers.CarController;
+import com.sky.nebula.carDealership.exceptions.InvalidDataException;
 import com.sky.nebula.carDealership.model.Car;
 import com.sky.nebula.carDealership.repository.CarRepository;
 import com.sky.nebula.carDealership.service.CarService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ControllerTests {
 
     CarRepository carRepository = mock(CarRepository.class);
+
     CarService carService = new CarService(carRepository);
     CarController carController = new CarController(carService);
 
 
-    // Need to test car is actually added in the addCar method
     @Test
     void addCarEndPointReturns201AndResponse() {
 
@@ -45,7 +44,7 @@ public class ControllerTests {
         String key = "Description";
         String value = "Database Updated";
 
-        Assertions.assertTrue(response.getBody().containsKey(key));
+        Assertions.assertTrue(Objects.requireNonNull(response.getBody()).containsKey(key));
         Assertions.assertTrue(response.getBody().containsValue(value));
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
@@ -257,5 +256,57 @@ public class ControllerTests {
 
         System.out.println(response);
     }
+
+    @Test
+    public void updateCarMethodTest() {
+        // Create a sample car and its updated version for testing.
+        Car existingCar = new Car(1, "Brand1", "Model1", 2022, 20000, 10000, "Red");
+        Car updatedCar = new Car(1, "Brand2", "Model2", 2023, 25000, 12000, "Blue");
+
+        // Mock the behavior of the carRepository's findById method to return the existingCar.
+        Mockito.when(carRepository.findById(updatedCar.getId())).thenReturn(Optional.of(existingCar));
+
+        // Call the updateCar method to update the existingCar.
+        carService.updateCar(updatedCar);
+
+        // Assertions for the updated car fields.
+        Assertions.assertEquals(updatedCar.getBrand(), existingCar.getBrand());
+        Assertions.assertEquals(updatedCar.getModel(), existingCar.getModel());
+        Assertions.assertEquals(updatedCar.getYear(), existingCar.getYear());
+        Assertions.assertEquals(updatedCar.getPrice(), existingCar.getPrice());
+        Assertions.assertEquals(updatedCar.getMileage(), existingCar.getMileage());
+        Assertions.assertEquals(updatedCar.getColour(), existingCar.getColour());
+
+        // Test the response from the controller.
+        ResponseEntity<Map<String, String>> response = carController.updateCar(updatedCar);
+        String key = "Description";
+        String value = "Car updated";
+
+        Assertions.assertTrue(Objects.requireNonNull(response.getBody()).containsKey(key));
+        Assertions.assertTrue(response.getBody().containsValue(value));
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+//    @Test
+//    public void updateCar_NonExistentCar_NotFound() {
+//        // Create an updated car with a non-existent ID.
+//        Car updatedCar = new Car(100, "Brand3", "Model3", 2023, 25000, 12000, "Green");
+//
+//        // Mock the behavior of the carRepository's findById method to return an empty optional.
+//        Mockito.when(carRepository.findById(updatedCar.getId())).thenReturn(Optional.empty());
+//
+//        // Call the updateCar method to update the non-existent car.
+//        Assertions.assertThrows(InvalidDataException.class, () -> {
+//            carService.updateCar(updatedCar);
+//        });
+//
+//        // Verify that the carRepository's save method was not called, as the car does not exist.
+//        Mockito.verify(carRepository, Mockito.never()).save(Mockito.any());
+//
+//        // Test the response from the controller and verify the custom exception message.
+//        Assertions.assertThrows(InvalidDataException.class, () -> {
+//            carController.updateCar(updatedCar);
+//        });
+//    }
 
 }

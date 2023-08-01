@@ -8,7 +8,7 @@ Feature: testing get all cars endpoint
     When client sends a "GET" request to "/cars/admin/get" endpoint
     Then the response should have a status code of 200
     And the response body should contain the list of cars in the database:
-      | brand | model | year | price  | mileage | colour     |
-      | BMW   | X5    | 2022 | 80000  | 10000   | space grey |
-      | BMW   | X6    | 2023 | 100000 | 1000    | sky blue   |
+      | id | brand | model | year | price  | mileage | colour     |
+      | 1  | BMW   | X5    | 2022 | 80000  | 10000   | space grey |
+      | 2  | BMW   | X6    | 2023 | 100000 | 1000    | sky blue   |
 
