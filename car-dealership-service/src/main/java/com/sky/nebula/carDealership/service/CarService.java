@@ -2,8 +2,10 @@ package com.sky.nebula.carDealership.service;
 
 import com.sky.nebula.carDealership.exceptions.CarAlreadyExistsException;
 import com.sky.nebula.carDealership.exceptions.InvalidDataException;
+import com.sky.nebula.carDealership.exceptions.InvalidQueryParameterException;
 import com.sky.nebula.carDealership.model.Car;
 import com.sky.nebula.carDealership.repository.CarRepository;
+import com.sky.nebula.carDealership.validators.RequestParameterValidation;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class CarService {
+
+    RequestParameterValidation validator = new RequestParameterValidation();
 
     private CarRepository carRepository;
 
@@ -59,51 +63,106 @@ public class CarService {
     }
 
     public List<Car> getBrand(String brand) {
-        List<Car> brandList = carRepository.findByBrand(brand).stream()
-                .sorted(Comparator.comparingInt(Car::getYear).reversed())
-                .collect(Collectors.toList());
 
-        return brandList;
+        // Check brand does not consist of only digits
+        if (brand.matches("\\d+")) {
+            throw new InvalidQueryParameterException(String.valueOf(Map.of("Description", "Incorrect query parameter provided")), HttpStatus.BAD_REQUEST);
+        }
+
+        // Calls method to validate request parameter variable
+        if (validator.validateString(brand)) {
+
+            //stream to create list, find by brand, and sort by newest to oldest
+            List<Car> brandList = carRepository.findByBrand(brand).stream()
+                    .sorted(Comparator.comparingInt(Car::getYear).reversed())
+                    .collect(Collectors.toList());
+
+            return brandList;
+        }
+
+        throw new InvalidQueryParameterException(String.valueOf(Map.of("Description", "Incorrect query parameter provided")), HttpStatus.BAD_REQUEST);
     }
 
     public List<Car> getModel(String model) {
-        List<Car> modelList = carRepository.findByModel(model).stream()
-                .sorted(Comparator.comparingInt(Car::getPrice))
-                .collect(Collectors.toList());
+        // Models can be numbers exclusively, no matching required
 
-        return modelList;
+        if (validator.validateString(model)) {
+            List<Car> modelList = carRepository.findByModel(model).stream()
+                    .sorted(Comparator.comparingInt(Car::getPrice))
+                    .collect(Collectors.toList());
+
+            return modelList;
+        }
+
+        throw new InvalidQueryParameterException(String.valueOf(Map.of("Description", "Incorrect query parameter provided")), HttpStatus.BAD_REQUEST);
     }
 
-    public List<Car> getYear(int year) {
-        List<Car> yearList = carRepository.findByYear(year).stream()
-                .sorted(Comparator.comparing(car -> car.getBrand().toLowerCase()))
-                .collect(Collectors.toList());
+    public List<Car> getYear(String year) {
+        if (validator.validateString(year)) {
 
-        return yearList;
+            // Using try catch block to catch letters where there should just be digits
+            try {
+                // Parsing variable to an int in order to run find by year
+                List<Car> yearList = carRepository.findByYear(Integer.parseInt(year)).stream()
+                        .sorted(Comparator.comparing(car -> car.getBrand().toLowerCase()))
+                        .collect(Collectors.toList());
+
+                return yearList;
+            } catch (NumberFormatException e) {
+                throw new InvalidQueryParameterException(String.valueOf(Map.of("Description", "Incorrect query parameter provided")), HttpStatus.BAD_REQUEST);
+            }
+        }
+
+        throw new InvalidQueryParameterException(String.valueOf(Map.of("Description", "Incorrect query parameter provided")), HttpStatus.BAD_REQUEST);
     }
 
-    public List<Car> getPrice(int price) {
-        List<Car> priceList = carRepository.findByPrice(price).stream()
-                .sorted(Comparator.comparing(Car::getYear).reversed())
-                .collect(Collectors.toList());
+    public List<Car> getPrice(String price) {
+        if (validator.validateString(price)) {
+            try {
+                List<Car> priceList = carRepository.findByPrice(Integer.parseInt(price)).stream()
+                        .sorted(Comparator.comparing(Car::getYear).reversed())
+                        .collect(Collectors.toList());
 
-        return priceList;
+                return priceList;
+            } catch (NumberFormatException e) {
+                throw new InvalidQueryParameterException(String.valueOf(Map.of("Description", "Incorrect query parameter provided")), HttpStatus.BAD_REQUEST);
+            }
+        }
+
+        throw new InvalidQueryParameterException(String.valueOf(Map.of("Description", "Incorrect query parameter provided")), HttpStatus.BAD_REQUEST);
     }
 
-    public List<Car> getMileage(int mileage) {
-        List<Car> mileageList = carRepository.findByMileage(mileage).stream()
-                .sorted(Comparator.comparing(car -> car.getBrand().toLowerCase()))
-                .collect(Collectors.toList());
+    public List<Car> getMileage(String mileage) {
+        if (validator.validateString(mileage)) {
+            try {
+                List<Car> mileageList = carRepository.findByMileage(Integer.parseInt(mileage)).stream()
+                        .sorted(Comparator.comparing(car -> car.getBrand().toLowerCase()))
+                        .collect(Collectors.toList());
 
-        return mileageList;
+                return mileageList;
+            } catch (NumberFormatException e) {
+                throw new InvalidQueryParameterException(String.valueOf(Map.of("Description", "Incorrect query parameter provided")), HttpStatus.BAD_REQUEST);
+            }
+        }
+
+        throw new InvalidQueryParameterException(String.valueOf(Map.of("Description", "Incorrect query parameter provided")), HttpStatus.BAD_REQUEST);
     }
 
     public List<Car> getColour(String colour) {
-        List<Car> colourList = carRepository.findByColour(colour).stream()
-                .sorted(Comparator.comparing(car -> car.getModel().toLowerCase()))
-                .collect(Collectors.toList());
 
-        return colourList;
+        // Check brand does not consist of only digits
+        if (colour.matches("\\d+")) {
+            throw new InvalidQueryParameterException(String.valueOf(Map.of("Description", "Incorrect query parameter provided")), HttpStatus.BAD_REQUEST);
+        }
+
+        if (validator.validateString(colour)) {
+            List<Car> colourList = carRepository.findByColour(colour).stream()
+                    .sorted(Comparator.comparing(car -> car.getModel().toLowerCase()))
+                    .collect(Collectors.toList());
+            return colourList;
+        }
+
+        throw new InvalidQueryParameterException(String.valueOf(Map.of("Description", "Incorrect query parameter provided")), HttpStatus.BAD_REQUEST);
     }
 
     public void deleteAllCars() {

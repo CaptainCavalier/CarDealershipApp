@@ -143,14 +143,14 @@ public class ControllerTests {
         List<Car> allCars = List.of(car1, car2, car3, car4);
 
         // Mocks list of cars with target brand
-        Mockito.when(carService.getYear(targetYear))
+        Mockito.when(carService.getYear(String.valueOf(targetYear)))
                 .thenReturn(allCars.stream()
                         .filter(car -> car.getYear().equals(targetYear))
                         .sorted(Comparator.comparing(car -> car.getBrand().toLowerCase()))
                         .collect(Collectors.toList()));
 
         // Act
-        ResponseEntity<List<Car>> response = carController.getYear(targetYear);
+        ResponseEntity<List<Car>> response = carController.getYear(String.valueOf(targetYear));
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -175,14 +175,14 @@ public class ControllerTests {
         List<Car> allCars = List.of(car1, car2, car3, car4);
 
         // Mocks list of cars with target brand
-        Mockito.when(carService.getPrice(targetPrice))
+        Mockito.when(carService.getPrice(String.valueOf(targetPrice)))
                 .thenReturn(allCars.stream()
                         .filter(car -> car.getPrice().equals(targetPrice))
                         .sorted(Comparator.comparingInt(Car::getYear).reversed())
                         .collect(Collectors.toList()));
 
         // Act
-        ResponseEntity<List<Car>> response = carController.getPrice(targetPrice);
+        ResponseEntity<List<Car>> response = carController.getPrice(String.valueOf(targetPrice));
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -207,14 +207,14 @@ public class ControllerTests {
         List<Car> allCars = List.of(car1, car2, car3, car4);
 
         // Mocks list of cars with target brand
-        Mockito.when(carService.getMileage(targetMileage))
+        Mockito.when(carService.getMileage(String.valueOf(targetMileage)))
                 .thenReturn(allCars.stream()
                         .filter(car -> car.getMileage().equals(targetMileage))
                         .sorted(Comparator.comparing(car -> car.getBrand().toLowerCase()))
                         .collect(Collectors.toList()));
 
         // Act
-        ResponseEntity<List<Car>> response = carController.getMileage(targetMileage);
+        ResponseEntity<List<Car>> response = carController.getMileage(String.valueOf(targetMileage));
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());

@@ -4,12 +4,11 @@ package com.sky.nebula.carDealership.exceptionHandlers;
 import com.sky.nebula.carDealership.controllers.CarController;
 import com.sky.nebula.carDealership.exceptions.CarAlreadyExistsException;
 import com.sky.nebula.carDealership.exceptions.InvalidDataException;
+import com.sky.nebula.carDealership.exceptions.InvalidQueryParameterException;
 import com.sky.nebula.carDealership.globalExceptionHandler.GlobalExceptionHandler;
 import com.sky.nebula.carDealership.model.Car;
 import com.sky.nebula.carDealership.repository.CarRepository;
 import com.sky.nebula.carDealership.service.CarService;
-import io.cucumber.core.internal.com.fasterxml.jackson.core.ObjectCodec;
-import io.cucumber.core.internal.com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.json.JsonParser;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -65,7 +63,6 @@ public class ExceptionHandlerTests {
 
         Assertions.assertThrows(CarAlreadyExistsException.class, () ->
                 carController.addCar(Collections.singletonList(car)));
-
         Assertions.assertEquals(expectedStatus, response.getStatusCode());
         Assertions.assertTrue(response.getBody().containsKey(key));
         Assertions.assertTrue(response.getBody().containsValue(value));
@@ -84,7 +81,6 @@ public class ExceptionHandlerTests {
 
         Assertions.assertThrows(InvalidDataException.class, () ->
                 carController.addCar(Collections.singletonList(testCarMissingData)));
-
         Assertions.assertEquals(expectedStatus, response.getStatusCode());
         Assertions.assertTrue(response.getBody().containsKey(key));
         Assertions.assertTrue(response.getBody().containsValue(value));
@@ -93,14 +89,7 @@ public class ExceptionHandlerTests {
     @Test
     void handleMalformedAttributeNameTest() throws HttpMessageNotReadableException {
 
-//        String malformedJson = "{\brand\: \"BMW\", \"model\": \"A5\", \"year\": 1900, \"price\": 10000, \"mileage\": 663000, \"colour\": \"sky blue\" }";
-
         String malformedJson = "this is not a json list of cars";
-
-        Assertions.assertThrows(InvalidDataException.class, () -> {
-            carController.addCar(List.of(new Car(malformedJson)));
-
-        });
 
         ResponseEntity<Map<String, String>> response = globalExceptionHandler.handleInvalidInput();
 
@@ -108,66 +97,30 @@ public class ExceptionHandlerTests {
         String key = "Description";
         String value = "Incorrect car data provided";
 
+        Assertions.assertThrows(InvalidDataException.class, () -> {
+            carController.addCar(List.of(new Car(malformedJson)));
+        });
         Assertions.assertEquals(expectedStatus, response.getStatusCode());
         Assertions.assertTrue(response.getBody().containsKey(key));
         Assertions.assertTrue(response.getBody().containsValue(value));
     }
 
     @Test
-    void testTest() {
-        Car car = new Car("BMW", "", 2022, 10000, 100000, "space grey");
+    void handleInvalidQueryParameterTest() throws InvalidQueryParameterException {
 
-        System.out.println(car.getModel().isEmpty());
+        String invalidQueryParameter = "bent ley";
+
+        ResponseEntity<Map<String, String>> response = globalExceptionHandler.handleInvalidQueryParameter();
+
+        HttpStatus expectedStatus = HttpStatus.BAD_REQUEST;
+        String key = "Description";
+        String value = "Incorrect query parameter provided";
+
+        Assertions.assertThrows(InvalidQueryParameterException.class, () -> {
+            carController.getBrand(invalidQueryParameter);
+        });
+        Assertions.assertEquals(expectedStatus, response.getStatusCode());
+        Assertions.assertTrue(response.getBody().containsKey(key));
+        Assertions.assertTrue(response.getBody().containsValue(value));
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//    @Test
-//    void addCarInvalidAttributeDataReturns400AndErrorMessage() throws InvalidDataException {
-//
-//        String requestBody = "[{\"\":\"BMW\",\"model\":\"X6\",\"year\":2023,\"price\":18800,\"mileage\":10000,\"colour\":\"space grey\"}]";
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//
-//        HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
-//
-//        MockServerRequest.Builder restTemplate = null;
-//        ResponseEntity<Map<String, String>> response = restTemplate.exchange("/cars/admin", HttpMethod.POST, request, new ParameterizedTypeReference<Map<String, String>>() {});
-//
-//        HttpStatus expectedStatus = HttpStatus.BAD_REQUEST;
-//        String key = "Description";
-//        String value = "Incorrect car data provided";
-//
-//        Assertions.assertEquals(expectedStatus, response.getStatusCode());
-//        Assertions.assertTrue(response.getBody().containsKey(key));
-//        Assertions.assertTrue(response.getBody().containsValue(value));
-//    }
-//

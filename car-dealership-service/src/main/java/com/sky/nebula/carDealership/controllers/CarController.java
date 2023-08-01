@@ -1,8 +1,6 @@
 package com.sky.nebula.carDealership.controllers;
 
-
 import com.sky.nebula.carDealership.model.Car;
-import com.sky.nebula.carDealership.repository.CarRepository;
 import com.sky.nebula.carDealership.service.CarService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -15,8 +13,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/cars")
 public class CarController {
-
-    CarRepository carRepository;
 
     private final CarService carService;
 
@@ -38,7 +34,7 @@ public class CarController {
     }
 
     @GetMapping("admin/brand")
-    public ResponseEntity<List<Car>> getBrand(@Valid @RequestParam("brand") String brand) {
+    public ResponseEntity<List<Car>> getBrand(@RequestParam("brand") String brand) {
         List<Car> carsByBrand = carService.getBrand(brand);
         //return list of cars with the same brand
         return new ResponseEntity<>(carsByBrand, HttpStatus.OK);
@@ -51,19 +47,19 @@ public class CarController {
     }
 
     @GetMapping("admin/year")
-    public ResponseEntity<List<Car>> getYear(@Valid @RequestParam("year") int year) {
+    public ResponseEntity<List<Car>> getYear(@Valid @RequestParam("year") String year) {
         List<Car> carsByYear = carService.getYear(year);
         return new ResponseEntity<>(carsByYear, HttpStatus.OK);
     }
 
     @GetMapping("admin/price")
-    public ResponseEntity<List<Car>> getPrice(@Valid @RequestParam("price") int price) {
+    public ResponseEntity<List<Car>> getPrice(@Valid @RequestParam("price") String price) {
         List<Car> carsByPrice = carService.getPrice(price);
         return new ResponseEntity<>(carsByPrice, HttpStatus.OK);
     }
 
     @GetMapping("admin/mileage")
-    public ResponseEntity<List<Car>> getMileage(@Valid @RequestParam("mileage") int mileage) {
+    public ResponseEntity<List<Car>> getMileage(@Valid @RequestParam("mileage") String mileage) {
         List<Car> carsByMileage = carService.getMileage(mileage);
         return new ResponseEntity<>(carsByMileage, HttpStatus.OK);
     }
@@ -78,9 +74,6 @@ public class CarController {
     public ResponseEntity<String> deleteAllCars() {
         carService.deleteAllCars();
         return new ResponseEntity<String>("Database Cleared", HttpStatus.OK);
-    }
-
-    public void addCar(String malformedJsonRequest) {
     }
 
 }
