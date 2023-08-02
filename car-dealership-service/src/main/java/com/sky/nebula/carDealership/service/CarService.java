@@ -5,6 +5,7 @@ import com.sky.nebula.carDealership.exceptions.InvalidDataException;
 import com.sky.nebula.carDealership.exceptions.InvalidQueryParameterException;
 import com.sky.nebula.carDealership.model.Car;
 import com.sky.nebula.carDealership.repository.CarRepository;
+import com.sky.nebula.carDealership.validators.CarValidator;
 import com.sky.nebula.carDealership.validators.RequestParameterValidation;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -165,6 +166,10 @@ public class CarService {
     public void updateCar(Car updatedCar) {
         // Retrieve the existing car from the database based on the ID.
         Optional<Car> existingCarOptional = carRepository.findById(updatedCar.getId());
+
+        if (!CarValidator.isCarDataValid(updatedCar)) {
+            throw new InvalidDataException(String.valueOf(Map.of("Description", "Incorrect car data provided")), HttpStatus.BAD_REQUEST);
+        }
 
         if (existingCarOptional.isEmpty()) {
             throw new InvalidDataException(String.valueOf(Map.of("Description", "Incorrect car data provided")), HttpStatus.BAD_REQUEST);

@@ -6,6 +6,7 @@ import com.sky.nebula.carDealership.exceptions.InvalidQueryParameterException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,7 +23,7 @@ public class GlobalExceptionHandler extends Throwable {
     }
 
 
-    @ExceptionHandler({InvalidDataException.class, HttpMessageNotReadableException.class})
+    @ExceptionHandler({InvalidDataException.class, HttpMessageNotReadableException.class, MethodArgumentNotValidException.class})
     public ResponseEntity handleInvalidInput() {
         return new ResponseEntity<>(Map.of("Description","Incorrect car data provided"), HttpStatus.BAD_REQUEST);
     }

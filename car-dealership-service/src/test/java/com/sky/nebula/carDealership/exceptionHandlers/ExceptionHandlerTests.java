@@ -20,9 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ExceptionHandlerTests {
 
@@ -69,7 +67,7 @@ public class ExceptionHandlerTests {
     }
 
     @Test
-    void addCarInvalidFieldDataReturns400AndErrorMessage() throws InvalidDataException {
+    void addCar_updateCarInvalidFieldDataReturns400AndErrorMessage() throws InvalidDataException {
 
         ResponseEntity<Map<String, String>> response = globalExceptionHandler.handleInvalidInput();
 
@@ -81,13 +79,15 @@ public class ExceptionHandlerTests {
 
         Assertions.assertThrows(InvalidDataException.class, () ->
                 carController.addCar(Collections.singletonList(testCarMissingData)));
+        Assertions.assertThrows(InvalidDataException.class, () ->
+                carController.updateCar(testCarMissingData));
         Assertions.assertEquals(expectedStatus, response.getStatusCode());
         Assertions.assertTrue(response.getBody().containsKey(key));
         Assertions.assertTrue(response.getBody().containsValue(value));
     }
 
     @Test
-    void handleMalformedAttributeNameTest() throws HttpMessageNotReadableException {
+    void addCar_updateCarMalformedAttributeTest() throws HttpMessageNotReadableException {
 
         String malformedJson = "this is not a json list of cars";
 
@@ -97,9 +97,10 @@ public class ExceptionHandlerTests {
         String key = "Description";
         String value = "Incorrect car data provided";
 
-        Assertions.assertThrows(InvalidDataException.class, () -> {
-            carController.addCar(List.of(new Car(malformedJson)));
-        });
+        Assertions.assertThrows(InvalidDataException.class, () ->
+                carController.addCar(List.of(new Car(malformedJson))));
+        Assertions.assertThrows(InvalidDataException.class, () ->
+                carController.updateCar(new Car(malformedJson)));
         Assertions.assertEquals(expectedStatus, response.getStatusCode());
         Assertions.assertTrue(response.getBody().containsKey(key));
         Assertions.assertTrue(response.getBody().containsValue(value));
@@ -122,5 +123,28 @@ public class ExceptionHandlerTests {
         Assertions.assertEquals(expectedStatus, response.getStatusCode());
         Assertions.assertTrue(response.getBody().containsKey(key));
         Assertions.assertTrue(response.getBody().containsValue(value));
+    }
+
+
+    @Test
+    void updateCar_NonExistentCar_NotFound() {
+        // Create an updated car with a non-existent ID.
+        Car updatedCar = new Car(100, "Brand3", "Model3", 2023, 25000, 12000, "Green");
+
+        // Mock the behavior of the carRepository's findById method to return an empty optional.
+        Mockito.when(carRepository.findById(updatedCar.getId())).thenReturn(Optional.empty());
+
+        // Call the updateCar method to update the non-existent car.
+        Assertions.assertThrows(InvalidDataException.class, () -> {
+            carService.updateCar(updatedCar);
+        });
+
+        // Verify that the carRepository's save method was not called, as the car does not exist.
+        Mockito.verify(carRepository, Mockito.never()).save(Mockito.any());
+
+        // Test the response from the controller and verify the custom exception message.
+        Assertions.assertThrows(InvalidDataException.class, () -> {
+            carController.updateCar(updatedCar);
+        });
     }
 }
