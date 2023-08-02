@@ -77,6 +77,12 @@ public class CarController {
         return new ResponseEntity<String>("Database Cleared", HttpStatus.OK);
     }
 
+    @DeleteMapping("/admin/{id}")
+    public ResponseEntity<String> deleteCar(@PathVariable Long id) {
+        carService.deleteCar(id);
+        return new ResponseEntity<String>("Car: " + (id) + " Has been deleted", HttpStatus.valueOf(204));
+    }
+
     @PutMapping("/admin/put")
     public ResponseEntity<Map<String, String>> updateCar(@Valid @RequestBody Car updatedCar) {
         carService.updateCar(updatedCar);

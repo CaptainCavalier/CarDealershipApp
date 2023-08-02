@@ -97,22 +97,10 @@ public class FeatureStepDefinitions {
         request = given().contentType(ContentType.JSON).body(json);
     }
 
-    @Given("I want to post the following json: {string}")
-    public RequestSpecification iWantToPostTheFollowingJson(String jsonbody) {
-        return given().contentType(ContentType.JSON).body(jsonbody);
-    }
-
     @And("the response body should have the key {string}")
     public void theResponseBodyShouldHaveTheKeyDatabaseUpdated(String bodyMessage) {
             json = response.asString();
             Assertions.assertEquals(bodyMessage, json);
-    }
-
-    @And("the database has the following cars")
-    public void theDatabaseHasTheFollowingCars(List<Car> cars) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(cars);
-        request = given().contentType(ContentType.JSON).body(json);
     }
 
     @And("the response body should contain the list of cars in the database:")
@@ -150,7 +138,7 @@ public class FeatureStepDefinitions {
         }
     }
 
-    @Given("the client sends a {string} request to {string} endpoint with a malformed json list")
+    @When("the client sends a {string} request to {string} endpoint with a malformed json list")
     public void theClientSendsARequestToEndpointWithAMalformedJsonList(String requestType, String endpoint) {
         String malformedJsonRequest = "This is not a JSON List of a car";
 
@@ -160,6 +148,9 @@ public class FeatureStepDefinitions {
                 break;
             case "POST":
                 response = request.contentType(ContentType.JSON).body(malformedJsonRequest).post(endpoint);
+                break;
+            case "PUT":
+                response = request.contentType(ContentType.JSON).body(malformedJsonRequest).put(endpoint);
                 break;
             default:
                 throw new InvalidDataException(requestType + " is not a valid request");

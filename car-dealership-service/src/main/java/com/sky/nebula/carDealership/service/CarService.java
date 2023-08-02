@@ -201,5 +201,8 @@ public class CarService {
             carRepository.deleteAll();
     }
 
+    public void deleteCar(Long id) {
+        carRepository.deleteById(id);
+    }
 }
 
