@@ -1,9 +1,9 @@
 package com.sky.nebula.carDealership.exceptionHandlers;
 
-
 import com.sky.nebula.carDealership.controllers.CarController;
 import com.sky.nebula.carDealership.exceptions.CarAlreadyExistsException;
 import com.sky.nebula.carDealership.exceptions.InvalidDataException;
+import com.sky.nebula.carDealership.exceptions.InvalidIdentificationDataException;
 import com.sky.nebula.carDealership.exceptions.InvalidQueryParameterException;
 import com.sky.nebula.carDealership.globalExceptionHandler.GlobalExceptionHandler;
 import com.sky.nebula.carDealership.model.Car;
@@ -22,6 +22,10 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 
 import java.util.*;
 
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+
+@SuppressWarnings("ALL")
 public class ExceptionHandlerTests {
 
     @Mock
@@ -62,7 +66,7 @@ public class ExceptionHandlerTests {
         Assertions.assertThrows(CarAlreadyExistsException.class, () ->
                 carController.addCar(Collections.singletonList(car)));
         Assertions.assertEquals(expectedStatus, response.getStatusCode());
-        Assertions.assertTrue(response.getBody().containsKey(key));
+        Assertions.assertTrue(Objects.requireNonNull(response.getBody()).containsKey(key));
         Assertions.assertTrue(response.getBody().containsValue(value));
     }
 
@@ -82,7 +86,7 @@ public class ExceptionHandlerTests {
         Assertions.assertThrows(InvalidDataException.class, () ->
                 carController.updateCar(testCarMissingData));
         Assertions.assertEquals(expectedStatus, response.getStatusCode());
-        Assertions.assertTrue(response.getBody().containsKey(key));
+        Assertions.assertTrue(Objects.requireNonNull(response.getBody()).containsKey(key));
         Assertions.assertTrue(response.getBody().containsValue(value));
     }
 
@@ -102,7 +106,7 @@ public class ExceptionHandlerTests {
         Assertions.assertThrows(InvalidDataException.class, () ->
                 carController.updateCar(new Car(malformedJson)));
         Assertions.assertEquals(expectedStatus, response.getStatusCode());
-        Assertions.assertTrue(response.getBody().containsKey(key));
+        Assertions.assertTrue(Objects.requireNonNull(response.getBody()).containsKey(key));
         Assertions.assertTrue(response.getBody().containsValue(value));
     }
 
@@ -121,7 +125,7 @@ public class ExceptionHandlerTests {
             carController.getBrand(invalidQueryParameter);
         });
         Assertions.assertEquals(expectedStatus, response.getStatusCode());
-        Assertions.assertTrue(response.getBody().containsKey(key));
+        Assertions.assertTrue(Objects.requireNonNull(response.getBody()).containsKey(key));
         Assertions.assertTrue(response.getBody().containsValue(value));
     }
 
@@ -135,16 +139,37 @@ public class ExceptionHandlerTests {
         Mockito.when(carRepository.findById(updatedCar.getId())).thenReturn(Optional.empty());
 
         // Call the updateCar method to update the non-existent car.
-        Assertions.assertThrows(InvalidDataException.class, () -> {
-            carService.updateCar(updatedCar);
-        });
+        Assertions.assertThrows(InvalidDataException.class, () ->
+                carService.updateCar(updatedCar));
 
         // Verify that the carRepository's save method was not called, as the car does not exist.
-        Mockito.verify(carRepository, Mockito.never()).save(Mockito.any());
+        Mockito.verify(carRepository, never()).save(Mockito.any());
 
         // Test the response from the controller and verify the custom exception message.
         Assertions.assertThrows(InvalidDataException.class, () -> {
             carController.updateCar(updatedCar);
         });
     }
+
+    @Test
+    void deleteCar_IdMissing_IdNonExistent() throws InvalidIdentificationDataException {
+        long nonExistentCarId = 999L;
+
+        Mockito.when(carRepository.existsById(nonExistentCarId)).thenReturn(false);
+
+        ResponseEntity<Map<String, String>> response = globalExceptionHandler.handleInvalidIdInput();
+
+        HttpStatus expectedStatus = HttpStatus.BAD_REQUEST;
+        String key = "description";
+        String value = "Incorrect id provided";
+
+        Assertions.assertThrows(InvalidIdentificationDataException.class, () ->
+                carService.deleteCar(nonExistentCarId));
+
+        Assertions.assertEquals(expectedStatus, response.getStatusCode());
+        Assertions.assertTrue(Objects.requireNonNull(response.getBody()).containsKey(key));
+        Assertions.assertTrue(response.getBody().containsValue(value));
+    }
+
+
 }
