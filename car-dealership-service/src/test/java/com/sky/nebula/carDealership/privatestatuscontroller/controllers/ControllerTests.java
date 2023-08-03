@@ -287,26 +287,4 @@ public class ControllerTests {
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
-//    @Test
-//    public void updateCar_NonExistentCar_NotFound() {
-//        // Create an updated car with a non-existent ID.
-//        Car updatedCar = new Car(100, "Brand3", "Model3", 2023, 25000, 12000, "Green");
-//
-//        // Mock the behavior of the carRepository's findById method to return an empty optional.
-//        Mockito.when(carRepository.findById(updatedCar.getId())).thenReturn(Optional.empty());
-//
-//        // Call the updateCar method to update the non-existent car.
-//        Assertions.assertThrows(InvalidDataException.class, () -> {
-//            carService.updateCar(updatedCar);
-//        });
-//
-//        // Verify that the carRepository's save method was not called, as the car does not exist.
-//        Mockito.verify(carRepository, Mockito.never()).save(Mockito.any());
-//
-//        // Test the response from the controller and verify the custom exception message.
-//        Assertions.assertThrows(InvalidDataException.class, () -> {
-//            carController.updateCar(updatedCar);
-//        });
-//    }
-
 }
