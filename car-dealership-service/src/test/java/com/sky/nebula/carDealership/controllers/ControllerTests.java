@@ -1,4 +1,4 @@
-package com.sky.nebula.carDealership.privatestatuscontroller.controllers;
+package com.sky.nebula.carDealership.controllers;
 
 import com.sky.nebula.carDealership.controllers.CarController;
 import com.sky.nebula.carDealership.exceptions.InvalidDataException;
@@ -285,6 +285,21 @@ public class ControllerTests {
         Assertions.assertTrue(Objects.requireNonNull(response.getBody()).containsKey(key));
         Assertions.assertTrue(response.getBody().containsValue(value));
         assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    public void deleteCarMethodTest() {
+        long carId = 1;
+        Car existingCar = new Car(carId, "Brand1", "Model1", 2022, 20000, 10000, "Red");
+
+        // Mock the behavior of carRepository.findById
+        when(carRepository.findById(carId)).thenReturn(Optional.of(existingCar));
+
+        // Call the deleteCar method
+        carService.deleteCar(carId);
+
+        // Verify that the carRepository.deleteById method is called with the correct carId
+        verify(carRepository, times(1)).deleteById(carId);
     }
 
 }
