@@ -1,10 +1,10 @@
 package com.sky.nebula.carDealership.controllers;
 
+import com.sky.nebula.carDealership.exceptions.InvalidIdentificationDataException;
 import com.sky.nebula.carDealership.model.Car;
 import com.sky.nebula.carDealership.service.CarService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -78,9 +78,13 @@ public class CarController {
     }
 
     @DeleteMapping("/admin/{id}")
-    public ResponseEntity<String> deleteCar(@PathVariable Long id) {
+    public ResponseEntity<String> deleteCar(@PathVariable(required = false) Long id) {
+        if (id == null || id.toString().isEmpty()) {
+            throw new InvalidIdentificationDataException(String.valueOf(Map.of("description", "Incorrect id provided")), HttpStatus.BAD_REQUEST);
+        }
         carService.deleteCar(id);
-        return new ResponseEntity<String>("Car: " + (id) + " Has been deleted", HttpStatus.valueOf(204));
+        String responseMessage = "Car: " + id + " has been deleted";
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(responseMessage);
     }
 
     @PutMapping("/admin/put")

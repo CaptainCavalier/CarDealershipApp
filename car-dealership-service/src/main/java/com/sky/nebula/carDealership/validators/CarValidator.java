@@ -4,6 +4,10 @@ import com.sky.nebula.carDealership.model.Car;
 
 public class CarValidator {
 
+    public static boolean isIdValid(Long id) {
+        return id != null && id > 0;
+    }
+
 
     public static boolean isCarDataValid(Car car) {
         return car.getBrand() != null && !car.getBrand().isEmpty() &&

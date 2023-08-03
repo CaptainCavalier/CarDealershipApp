@@ -2,6 +2,7 @@ package com.sky.nebula.carDealership.service;
 
 import com.sky.nebula.carDealership.exceptions.CarAlreadyExistsException;
 import com.sky.nebula.carDealership.exceptions.InvalidDataException;
+import com.sky.nebula.carDealership.exceptions.InvalidIdentificationDataException;
 import com.sky.nebula.carDealership.exceptions.InvalidQueryParameterException;
 import com.sky.nebula.carDealership.model.Car;
 import com.sky.nebula.carDealership.repository.CarRepository;
@@ -202,6 +203,10 @@ public class CarService {
     }
 
     public void deleteCar(Long id) {
+
+        if (!carRepository.existsById(id)) {
+            throw new InvalidIdentificationDataException(String.valueOf(Map.of("description", "Incorrect id provided")), HttpStatus.BAD_REQUEST);
+        }
         carRepository.deleteById(id);
     }
 }
