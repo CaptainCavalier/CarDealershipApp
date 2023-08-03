@@ -1,4 +1,4 @@
-package com.sky.nebula.carDealership.privatestatuscontroller.controllers;
+package com.sky.nebula.carDealership.controllers;
 
 import com.sky.nebula.carDealership.controllers.PrivateStatusController;
 import org.junit.jupiter.api.Assertions;
